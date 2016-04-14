@@ -1,2 +1,2 @@
 # debonair
-Micro Orm Wrapper
+Micro Orm - Its just got simpler
