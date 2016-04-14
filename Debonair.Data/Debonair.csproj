@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B8C24577-FAE7-4C04-AB54-8C94262C2FE2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Debonair</RootNamespace>
+    <AssemblyName>Debonair</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\Context\IContext.cs" />
+    <Compile Include="Data\Context\SqlContext.cs" />
+    <Compile Include="Data\DataRepository.cs" />
+    <Compile Include="Data\IDataRepository.cs" />
+    <Compile Include="Data\Orm\Attributes.cs" />
+    <Compile Include="Data\Orm\ICrudGenerator.cs" />
+    <Compile Include="Data\Orm\PropertyMetadata.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\LikeNode.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\MemberNode.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\Node.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\OperationNode.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\SingleOperationNode.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\ValueNode.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\LambdaToSql.cs" />
+    <Compile Include="Data\Orm\QueryBuilder\SqlBuilder.cs" />
+    <Compile Include="Data\Orm\SqlCrudGenerator.cs" />
+    <Compile Include="Entities\DebonairEntity.cs" />
+    <Compile Include="Entities\Enums.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Extensions\DateExts.cs" />
+    <Compile Include="Utilities\Extensions\DbDataReaderExts.cs" />
+    <Compile Include="Utilities\Extensions\ListExts.cs" />
+    <Compile Include="Utilities\Extensions\StringExts.cs" />
+    <Compile Include="Utilities\DebonairMapper.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
