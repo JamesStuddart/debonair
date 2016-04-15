@@ -13,7 +13,7 @@ namespace Debonair.Tests.MockObjects
     }
 
     [Table("TestTable")]
-    public class DeleteableTestObject : DebonairDeleteable
+    public class DeleteableTestObject : DebonairStandard
     {
         [KeyProperty(true)]
         public int Id { get; set; }
@@ -22,6 +22,9 @@ namespace Debonair.Tests.MockObjects
         public TestStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
+        [IsDeletedProperty]
+        public bool IsDeleted { get; set; }
+
     }
 
     public enum TestStatus

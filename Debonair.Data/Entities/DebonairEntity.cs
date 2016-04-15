@@ -28,12 +28,4 @@ namespace Debonair.Entities
             }
         }
     }
-
-    public class DebonairDeleteable : DebonairStandard
-        {
-            [IsDeletedProperty]
-            public bool IsDeleted { get; set; }
-        }
-
-
-    }
+}

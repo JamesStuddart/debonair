@@ -1,4 +1,6 @@
-﻿using System.Data.SqlClient;
+﻿using System.Configuration;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using Debonair.Data;
 using Debonair.Tests.MockObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,17 +10,17 @@ namespace Debonair.Tests.Data
     [TestClass]
     public class DataRepositoryTests
     {
+        readonly IDataRepository<TestObject> repo = new DataRepository<TestObject>(new SqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString));
 
         [TestMethod]
         public void SelectTest()
         {
-            var repo = new DataRepository<TestObject>(new SqlConnection());
-            var results = repo.Select(x => x.CustomerName == "Joe Bloggs");
-        }
+          var results = repo.Select();
+         }
+
         [TestMethod]
         public void StoredProcedureTest()
         {
-            var repo = new DataRepository<TestObject>(new SqlConnection());
             var results = repo.ExecuteStoredProcedure<TestObject>("dbo.spName", new {Id = 1, CustomerName = "Joe Bloggs"});
         }
     }
