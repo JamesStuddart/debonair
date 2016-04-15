@@ -55,10 +55,10 @@ namespace Debonair.Data.Context
         }
 
         #region nonquery
-        public void ExecuteNonQuery<TEntity>(string sql, List<SqlParameter> parameters)
+        public void ExecuteNonQuery(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text)
         {
             var cmd = SqlConnection.CreateCommand();
-            cmd.CommandType = CommandType.Text;
+            cmd.CommandType = commandType;
             cmd.CommandText = sql;
 
             foreach (var parameter in parameters)
@@ -79,17 +79,17 @@ namespace Debonair.Data.Context
 
         }
 
-        public void ExecuteNonQuery<TEntity>(string sql)
+        public void ExecuteNonQuery(string sql)
         {
-            ExecuteNonQuery<TEntity>(sql, new List<SqlParameter>());
+            ExecuteNonQuery(sql, new List<SqlParameter>());
         }
         #endregion nonquery
 
         #region ExecuteScalar
-        public int ExecuteScalar<TEntity>(string sql, List<SqlParameter> parameters)
+        public int ExecuteScalar<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text)
         {
             var cmd = SqlConnection.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandType = commandType;
             cmd.CommandText = sql;
 
             foreach (var parameter in parameters)
@@ -121,10 +121,10 @@ namespace Debonair.Data.Context
 
         #region query
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql, List<SqlParameter> parameters)
+        public IEnumerable<TEntity> Query<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text)
         {
             var cmd = SqlConnection.CreateCommand();
-            cmd.CommandType = CommandType.Text;
+            cmd.CommandType = commandType;
             cmd.CommandText = sql;
 
             foreach (var parameter in parameters)
@@ -153,9 +153,30 @@ namespace Debonair.Data.Context
             return Query<TEntity>(sql, new List<SqlParameter> { parameter });
         }
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql)
+        public IEnumerable<TEntity> Query<TEntity>(string sql, CommandType commandType = CommandType.Text)
         {
             return Query<TEntity>(sql, new List<SqlParameter>());
+        }
+
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, List<SqlParameter> parameters)
+        {
+            return Query<TEntity>(spName, parameters, CommandType.StoredProcedure);
+
+        }
+
+        public void ExecuteStoredProcedure(string spName, List<SqlParameter> parameters)
+        {
+             ExecuteNonQuery(spName, parameters, CommandType.StoredProcedure);
+        }
+
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName)
+        {
+            return Query<TEntity>(spName, new List<SqlParameter>(), CommandType.StoredProcedure);
+        }
+
+        public void ExecuteStoredProcedure(string spName)
+        {
+             ExecuteNonQuery(spName, new List<SqlParameter>(), CommandType.StoredProcedure);
         }
 
         #endregion query

@@ -10,10 +10,16 @@ namespace Debonair.Tests.Data
     {
 
         [TestMethod]
-        public void Test()
+        public void SelectTest()
         {
             var repo = new DataRepository<TestObject>(new SqlConnection());
             var results = repo.Select(x => x.CustomerName == "Joe Bloggs");
+        }
+        [TestMethod]
+        public void StoredProcedureTest()
+        {
+            var repo = new DataRepository<TestObject>(new SqlConnection());
+            var results = repo.ExecuteStoredProcedure<TestObject>("dbo.spName", new {Id = 1, CustomerName = "Joe Bloggs"});
         }
     }
 }

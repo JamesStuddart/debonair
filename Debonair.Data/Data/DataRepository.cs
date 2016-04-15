@@ -49,7 +49,7 @@ namespace Debonair.Data
         public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true)
         {
             var sql = sqlGenerator.Select(predicate, dirtyRead);
-            return dataContext.Query<TEntity>(sql,sqlGenerator.SelectParameters.ToSqlParameters());
+            return dataContext.Query<TEntity>(sql, sqlGenerator.SelectParameters.ToSqlParameters());
         }
 
         public bool Insert(TEntity entity)
@@ -66,7 +66,7 @@ namespace Debonair.Data
         public bool Update(TEntity entity)
         {
             var sql = sqlGenerator.Update();
-            dataContext.ExecuteNonQuery<TEntity>(sql, entity.ToSqlParameters());
+            dataContext.ExecuteNonQuery(sql, entity.ToSqlParameters());
 
             return true;
         }
@@ -74,9 +74,30 @@ namespace Debonair.Data
         public bool Delete(TEntity entity, bool forceDelete = false)
         {
             var sql = sqlGenerator.Delete();
-            dataContext.ExecuteNonQuery<TEntity>(sql);
+            dataContext.ExecuteNonQuery(sql);
 
             return true;
+        }
+
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, object parameters)
+        {
+            return dataContext.ExecuteStoredProcedure<TEntity>(spName, parameters.ToSqlParameters());
+        }
+
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName)
+        {
+            return dataContext.ExecuteStoredProcedure<TEntity>(spName);
+        }
+
+
+        public void ExecuteStoredProcedure(string spName, object parameters)
+        {
+            dataContext.ExecuteStoredProcedure(spName, parameters.ToSqlParameters());
+        }
+
+        public void ExecuteStoredProcedure(string spName)
+        {
+            dataContext.ExecuteStoredProcedure(spName);
         }
     }
 }
