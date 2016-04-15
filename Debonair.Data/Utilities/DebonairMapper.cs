@@ -59,7 +59,7 @@ namespace Debonair.Utilities
         }
         public static List<SqlParameter> ToSqlParameters(this Dictionary<string,object> source)
         {
-            return source.Select(item => new SqlParameter(item.Key, item.Value)).ToList();
+            return source?.Select(item => new SqlParameter(item.Key, item.Value)).ToList() ?? new List<SqlParameter>();
         }
     }
 }

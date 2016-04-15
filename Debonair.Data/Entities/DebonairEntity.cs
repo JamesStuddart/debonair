@@ -7,6 +7,7 @@ namespace Debonair.Entities
 {
     public class DebonairStandard
     {
+        [Ignore]
         public int? PrimaryKey
         {
             get
