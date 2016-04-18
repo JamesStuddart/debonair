@@ -92,7 +92,7 @@ namespace Debonair.Data.Orm
 
             if (IsPrimaryKey)
             {
-                strBuilder.AppendLine("DECLARE @NEWID NUMERIC(38, 0)");
+                strBuilder.AppendLine("DECLARE @NEWID int");
                 strBuilder.AppendLine("SET @NEWID = SCOPE_IDENTITY()");
                 strBuilder.AppendLine("SELECT @NEWID");
             }
