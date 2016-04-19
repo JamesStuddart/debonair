@@ -21,7 +21,7 @@ namespace Debonair.Tests.Data
         [TestMethod]
         public void StoredProcedureTest()
         {
-            var results = repo.ExecuteStoredProcedure<TestObject>("dbo.spName", new {Id = 1, CustomerName = "Joe Bloggs"});
+            var results = repo.ExecuteStoredProcedure("dbo.spName", new {Id = 1, CustomerName = "Joe Bloggs"});
         }
     }
 }

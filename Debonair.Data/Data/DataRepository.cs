@@ -79,23 +79,23 @@ namespace Debonair.Data
             return true;
         }
 
-        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, object parameters)
+        public IEnumerable<TEntity> ExecuteStoredProcedure(string spName, object parameters)
         {
             return dataContext.ExecuteStoredProcedure<TEntity>(spName, parameters.ToSqlParameters());
         }
 
-        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName)
+        public IEnumerable<TEntity> ExecuteStoredProcedure(string spName)
         {
             return dataContext.ExecuteStoredProcedure<TEntity>(spName);
         }
 
 
-        public void ExecuteStoredProcedure(string spName, object parameters)
+        public void ExecuteNonQueryStoredProcedure(string spName, object parameters)
         {
             dataContext.ExecuteStoredProcedure(spName, parameters.ToSqlParameters());
         }
 
-        public void ExecuteStoredProcedure(string spName)
+        public void ExecuteNonQueryStoredProcedure(string spName)
         {
             dataContext.ExecuteStoredProcedure(spName);
         }

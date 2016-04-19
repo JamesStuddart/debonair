@@ -18,10 +18,10 @@ namespace Debonair.Data
 
         bool Delete(TEntity entity, bool forceDelete = false);
 
-        IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, object parameters);
-        IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName);
+        IEnumerable<TEntity> ExecuteStoredProcedure(string spName, object parameters);
+        IEnumerable<TEntity> ExecuteStoredProcedure(string spName);
 
-        void ExecuteStoredProcedure(string spName, object parameters);
-        void ExecuteStoredProcedure(string spName);
+        void ExecuteNonQueryStoredProcedure(string spName, object parameters);
+        void ExecuteNonQueryStoredProcedure(string spName);
     }
 }
