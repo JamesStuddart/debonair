@@ -11,7 +11,7 @@ Simply build the solution and add the DLL to your projects
 
 **OR**
 
-Dapper is alaso available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
+Debonair is alaso available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
 
 
 ## Usage
