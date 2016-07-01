@@ -5,6 +5,13 @@ Micro Orm - Its just got simpler
 
 Debonair is a very light weight ORM, that does not contain object tracking, it does not support child objects. Its back to basics, Keep It Simple Stupid.
 
+## Why Debonair?
+The goal of debonair is to take things back to basics, providing quick data access, while stopping you (the developer) attempting to make the orm do the heavy lifting that should be done by the database. The likes of Entity Framework and Linq2SQL are great, but are very slow, produce horrible sql and let you do a lot of stuff that you really shouldn't be doing.
+
+*If you want masses of bells and whistles then Debonair probably isn't for you, but if you just want access to your data then give it a try.*
+
+---
+
 ## Setup
 
 Simply build the solution and add the DLL to your projects
