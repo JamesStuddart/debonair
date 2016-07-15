@@ -341,3 +341,4 @@ Both *Linq2Sql* and *Debonair* are also mapping the results to the entities with
 
 
 *These times are not conclusive, but they are the extremes of several runs of the code.*
+
