@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Debonair</id>
+        <version>1.0.0</version>
+        <authors>James Studdart</authors>
+        <licenseUrl>https://github.com/JamesStuddart/debonair/blob/master/License</licenseUrl>
+        <projectUrl>https://github.com/JamesStuddart/debonair</projectUrl>
+        <iconUrl>https://camo.githubusercontent.com/aa2d5df0160d0d8c4eb7f91d0e7777ab56754e5d/687474703a2f2f6a616d657373747564646172742e636f2e756b2f436f6e74656e742f496d616765732f6465626f6e6169722d726f756e642e706e67</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Debonair is a very light weight ORM, that does not contain object tracking, it does not support child objects. Its back to basics, Keep It Simple Stupid.</description>
+        <summary>Micro Orm - Its just got simpler</summary>
+        <copyright />
+        <language>en-GB</language>
+    </metadata>
+    <files>
+        <file src="Debonair.Data\bin\Release\Debonair.dll" target="lib\Debonair.dll" />
+    </files>
+</package>
