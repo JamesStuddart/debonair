@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using Debonair.Data.Orm;
-using Debonair.Entities;
+using Debonair.FluentApi;
 
 namespace Debonair.Utilities
 {
@@ -13,7 +12,7 @@ namespace Debonair.Utilities
         /// <param name="source">Objet you want to map FROM</param>
         /// <param name="strict">Ensure property types match as well as names</param>
         /// <returns></returns>
-        public static TEntity MapTo<TEntity>(this object source, bool strict = true) where TEntity : DebonairStandard, new()
+        public static TEntity MapTo<TEntity>(this object source, bool strict = true) where TEntity : class, new()
         {
             var destination = new TEntity();
             var sourceProperties = source.GetType().GetProperties();
@@ -43,14 +42,17 @@ namespace Debonair.Utilities
             return destination;
         }
 
-        public static List<SqlParameter> ToSqlParameters(this object source)
+        public static List<SqlParameter> ToSqlParameters<TEntity>(this object source) where TEntity : class
         {
             var list = new List<SqlParameter>();
 
+            var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+
             foreach (var prop in source.GetType().GetProperties())
             {
-                var ignore = (Ignore)prop.GetCustomAttributes(typeof(Ignore), false).FirstOrDefault();
-                if (ignore != null) continue;
+                var propMapping = mapping.GetMappingForType(prop);
+                  
+                if (propMapping.IsIgnored) continue;
 
                 list.Add(new SqlParameter(prop.Name, prop.GetValue(source, null)));
             }

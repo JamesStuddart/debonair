@@ -4,25 +4,20 @@ using Debonair.Entities;
 
 namespace Debonair.Tests.MockObjects
 {
-    public class TestObject : DebonairStandard
+    public class TestObject
     {
-        [KeyProperty(true)]
         public int Id { get; set; }
         public string CustomerName { get; set; }
         public TestStatus Status { get; set; }
     }
 
-    [Table("TestTable")]
-    public class DeleteableTestObject : DebonairStandard
+    public class DeleteableTestObject 
     {
-        [KeyProperty(true)]
         public int Id { get; set; }
-        [Column("Name")]
         public string CustomerName { get; set; }
         public TestStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
-        [IsDeletedProperty]
         public bool IsDeleted { get; set; }
 
     }

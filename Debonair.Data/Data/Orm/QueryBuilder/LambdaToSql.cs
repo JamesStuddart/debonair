@@ -5,13 +5,22 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Debonair.Data.Orm.QueryBuilder.ExpressionTree;
 using Debonair.Entities;
+using Debonair.FluentApi;
 
 namespace Debonair.Data.Orm.QueryBuilder
 {
-    internal class LambdaToSql<TEntity> where TEntity : DebonairStandard, new()
+    internal class LambdaToSql<TEntity> where TEntity : class, new()
     {
-        public bool ContainsIsDeleteable { get; private set; }
+        public IEntityMapping<TEntity> EntityMapping { get; }
+
+        //public bool ContainsIsDeleteable { get; private set; }
         public Dictionary<string, object> SelectParameters = new Dictionary<string, object>();
+
+        public LambdaToSql()
+        {
+            EntityMapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+        }
+
 
         public string GenerateWhere(Expression<Func<TEntity, bool>> expression)
         {
@@ -53,6 +62,26 @@ namespace Debonair.Data.Orm.QueryBuilder
             };
         }
 
+        private static MemberExpression GetMemberExpression(Expression expression)
+        {
+            MemberExpression returnExpression;
+
+            switch (expression.NodeType)
+            {
+                case ExpressionType.MemberAccess:
+                    returnExpression = expression as MemberExpression;
+                    break;
+                case ExpressionType.Convert:
+                    var unaryExpression = expression as UnaryExpression;
+                    returnExpression = unaryExpression != null ? GetMemberExpression(unaryExpression.Operand) : null;
+                    break;
+                default:
+                    throw new NotSupportedException($"{expression.NodeType} is an unsupported expression");
+            }
+
+            return returnExpression;
+        }
+
         private Node ResolveQuery(MethodCallExpression callExpression)
         {
             LikeMethod callFunction;
@@ -60,17 +89,15 @@ namespace Debonair.Data.Orm.QueryBuilder
             {
                 var fieldValue = (string)GetExpressionValue(callExpression.Arguments.First());
 
-                var metaDate = new PropertyMetadata(callExpression.Object, typeof(TEntity));
-
-                if(!ContainsIsDeleteable && metaDate.IsSoftDeletable)
-                    ContainsIsDeleteable = true;
+                var property = typeof(TEntity).GetProperty(GetMemberExpression(callExpression.Object).Member.Name);
+                var column = EntityMapping.PropertyMappings.FirstOrDefault(x => x.GetType() == property.GetType());
 
                 return new LikeNode()
                 {
                     MemberNode = new MemberNode()
                     {
-                        TableName = metaDate.TableName,
-                        FieldName = metaDate.ColumnName
+                        TableName = EntityMapping.TableName,
+                        FieldName = column != null ? column.ColumnName : property.Name
                     },
                     Method = callFunction,
                     Value = fieldValue
@@ -96,15 +123,14 @@ namespace Debonair.Data.Orm.QueryBuilder
             switch (memberExpression.Expression.NodeType)
             {
                 case ExpressionType.Parameter:
-                    var metaDate = new PropertyMetadata(rootExpression, typeof(TEntity));
 
-                    if (!ContainsIsDeleteable && metaDate.IsSoftDeletable)
-                        ContainsIsDeleteable = true;
+                    var property = typeof(TEntity).GetProperty(GetMemberExpression(rootExpression).Member.Name);
+                    var column = EntityMapping.PropertyMappings.FirstOrDefault(x => x.GetType() == property.GetType());
 
                     return new MemberNode()
                     {
-                        TableName = metaDate.TableName,
-                        FieldName = metaDate.ColumnName
+                        TableName = EntityMapping.TableName,
+                        FieldName = column != null ? column.ColumnName : property.Name
                     };
                 case ExpressionType.MemberAccess:
                     return ResolveQuery(memberExpression.Expression as MemberExpression, rootExpression);

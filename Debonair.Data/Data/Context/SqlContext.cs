@@ -86,7 +86,7 @@ namespace Debonair.Data.Context
         #endregion nonquery
 
         #region ExecuteScalar
-        public int ExecuteScalar<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text)
+        public int ExecuteScalar<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
             var cmd = SqlConnection.CreateCommand();
             cmd.CommandType = commandType;
@@ -113,7 +113,7 @@ namespace Debonair.Data.Context
             return result;
         }
         
-        public int ExecuteScalar<TEntity>(string sql)
+        public int ExecuteScalar<TEntity>(string sql) where TEntity : class, new()
         {
             return ExecuteScalar<TEntity>(sql, new List<SqlParameter>());
         }
@@ -121,7 +121,7 @@ namespace Debonair.Data.Context
 
         #region query
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text)
+        public IEnumerable<TEntity> Query<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
             var cmd = SqlConnection.CreateCommand();
             cmd.CommandType = commandType;
@@ -148,17 +148,17 @@ namespace Debonair.Data.Context
             return result;
         }
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql, SqlParameter parameter)
+        public IEnumerable<TEntity> Query<TEntity>(string sql, SqlParameter parameter) where TEntity : class, new()
         {
             return Query<TEntity>(sql, new List<SqlParameter> { parameter });
         }
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql, CommandType commandType = CommandType.Text)
+        public IEnumerable<TEntity> Query<TEntity>(string sql, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
             return Query<TEntity>(sql, new List<SqlParameter>());
         }
 
-        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, List<SqlParameter> parameters)
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, List<SqlParameter> parameters) where TEntity : class, new()
         {
             return Query<TEntity>(spName, parameters, CommandType.StoredProcedure);
 
@@ -169,7 +169,7 @@ namespace Debonair.Data.Context
              ExecuteNonQuery(spName, parameters, CommandType.StoredProcedure);
         }
 
-        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName)
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName) where TEntity : class, new()
         {
             return Query<TEntity>(spName, new List<SqlParameter>(), CommandType.StoredProcedure);
         }
