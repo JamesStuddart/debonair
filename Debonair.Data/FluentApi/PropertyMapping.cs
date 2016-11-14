@@ -39,12 +39,5 @@ namespace Debonair.FluentApi
         }
         #endregion set methods
 
-
-        #region Validation properties
-
-        public bool IsCaseSensitive { get; private set; }
-        public bool IsRequired { get; private set; }
-
-        #endregion Validation properties
     }
 }

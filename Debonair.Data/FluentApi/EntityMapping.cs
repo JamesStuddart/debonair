@@ -14,6 +14,8 @@ namespace Debonair.FluentApi
         public IPropertyMapping IsDeletedProperty { get { return PropertyMappings.FirstOrDefault(x => x.IsDeletedProperty); } }
         public IEnumerable<IPropertyMapping> Properties { get { return PropertyMappings.Where(x => x != PrimaryKey && !x.IsIgnored); } }
 
+        public string SchemaName { get; private set; }
+        public string TableName { get; private set; }
 
         protected internal EntityMapping(IList<IPropertyMapping> propertyMappers = null)
         {
@@ -35,38 +37,43 @@ namespace Debonair.FluentApi
 
         #region set methods
 
-        public string SchemaName { get; private set; }
-        public string TableName { get; private set; }
-
-        public void SetPrimaryKey(Expression<Func<TEntity, object>> expression)
-        {
-            DefineMapping(expression).SetPrimaryKey();
-        }
-
-        public void SetIsDeletedProperty(Expression<Func<TEntity, object>> expression)
+        public IEntityMapping<TEntity> SetPrimaryKey(Expression<Func<TEntity, object>> expression)
         {
             DefineMapping(expression).SetPrimaryKey();
 
+            return this;
         }
 
-        public void SetIgnore(Expression<Func<TEntity, object>> expression)
+        public IEntityMapping<TEntity> SetIsDeletedProperty(Expression<Func<TEntity, object>> expression)
+        {
+            DefineMapping(expression).SetPrimaryKey();
+
+            return this;
+        }
+
+        public IEntityMapping<TEntity> SetIgnore(Expression<Func<TEntity, object>> expression)
         {
             DefineMapping(expression).Ignore();
+
+            return this;
         }
 
-        public void SetSchemaName(string schemaName)
+        public IEntityMapping<TEntity> SetSchemaName(string schemaName)
         {
             SchemaName = schemaName;
+            return this;
         }
 
-        public void SetTableName(string tableName)
+        public IEntityMapping<TEntity> SetTableName(string tableName)
         {
             TableName = tableName;
+            return this;
         }
 
-        public void SetColumnName(Expression<Func<TEntity, object>> expression, string columnName)
+        public IEntityMapping<TEntity> SetColumnName(Expression<Func<TEntity, object>> expression, string columnName)
         {
             DefineMapping(expression).SetColumnName(columnName);
+            return this;
 
         }
 

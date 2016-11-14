@@ -22,12 +22,12 @@ namespace Debonair.FluentApi
 
         #region set methods
 
-        void SetPrimaryKey(Expression<Func<TEntity, object>> expression);
-        void SetIsDeletedProperty(Expression<Func<TEntity, object>> expression);
-        void SetIgnore(Expression<Func<TEntity, object>> expression);
-        void SetSchemaName(string schemaName);
-        void SetTableName(string tableName);
-        void SetColumnName(Expression<Func<TEntity, object>> expression, string columnName);
+        IEntityMapping<TEntity> SetPrimaryKey(Expression<Func<TEntity, object>> expression);
+        IEntityMapping<TEntity> SetIsDeletedProperty(Expression<Func<TEntity, object>> expression);
+        IEntityMapping<TEntity> SetIgnore(Expression<Func<TEntity, object>> expression);
+        IEntityMapping<TEntity> SetSchemaName(string schemaName);
+        IEntityMapping<TEntity> SetTableName(string tableName);
+        IEntityMapping<TEntity> SetColumnName(Expression<Func<TEntity, object>> expression, string columnName);
 
         #endregion set methods
 
