@@ -16,6 +16,5 @@ namespace Debonair.Tests.FluentApi
             Assert.IsTrue(mapping.PropertyMappings.Any());
             Assert.IsTrue(mapping.PropertyMappings.Count == 1);
         }
-
     }
 }

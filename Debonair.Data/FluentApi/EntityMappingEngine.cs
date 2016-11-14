@@ -1,24 +1,25 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Reflection;
-using Debonair.Framework;
 
 namespace Debonair.FluentApi
 {
     public static class EntityMappingEngine
     {
         private static bool isInitialized = false;
-        private static List<IEntityMapping> entityMappings;
+        private static IList<IEntityMapping> entityMappings;
 
-        public static void Initialize(List<IEntityMapping> mappings = null)
+        public static void Initialize(IList<IEntityMapping> mappings = null)
         {
+            ForceLoadAssemblies();
+
             try
             {
                 entityMappings = mappings ?? LoadEntityMappings();
                 isInitialized = true;
-
             }
             catch (Exception ex)
             {
@@ -26,17 +27,11 @@ namespace Debonair.FluentApi
             }
         }
 
-        private static List<IEntityMapping> LoadEntityMappings()
-        {
-            //go get all the mappings
-            return new List<IEntityMapping>();
-        }
-
         public static IEntityMapping<TEntity> GetMappingForEntity<TEntity>() where TEntity : class
         {
             CheckInitialization();
 
-            var mapping = (IEntityMapping<TEntity>) entityMappings.FirstOrDefault(x => x.GetType() == typeof(IEntityMapping<TEntity>));
+            var mapping = (IEntityMapping<TEntity>)entityMappings.Where(x => x.GetType().BaseType != null).FirstOrDefault(x => x.GetType().BaseType.GenericTypeArguments[0] == typeof(TEntity));
 
             if (mapping == null)
             {
@@ -55,6 +50,29 @@ namespace Debonair.FluentApi
             if (isInitialized == false)
                 Initialize();
             //throw new InitializationException("Debonair Entity Mapping Engine NOT Initialized");
+        }
+
+
+        private static IList<IEntityMapping> LoadEntityMappings()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => typeof(IEntityMapping).IsAssignableFrom(x) && !x.IsGenericType && !x.IsGenericTypeDefinition && !x.IsInterface).Select(x => (IEntityMapping)Activator.CreateInstance(x)).ToList();
+        }
+
+        private static void ForceLoadAssemblies()
+        {
+            var stackFrames = new StackTrace().GetFrames();
+            if (stackFrames != null)
+                foreach (var frame in stackFrames)
+                {
+                    var type = frame.GetMethod().DeclaringType;
+                    if (type != null)
+                    {
+                        foreach (var refedAssembly in type.Assembly.GetReferencedAssemblies())
+                        {
+                            Assembly.Load(refedAssembly);
+                        }
+                    }
+                }
         }
     }
 }
