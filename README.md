@@ -1,9 +1,25 @@
 # debonair
 Micro Orm - Its just got simpler
 
-![Debonair](http://jamesstuddart.co.uk/Content/Images/debonair-round.png)
+![version](https://img.shields.io/badge/version-v1.1.0.0-4FC921.svg) ![released](https://img.shields.io/badge/released-2016/11/10-D6AE22.svg) ![branch](https://img.shields.io/badge/branch-FluentApi-A1A1A1.svg) ![branch](https://img.shields.io/badge/.Net-4.6.1-4FC921.svg)
+
+![Debonair](/debonair-round.png?raw=true "Debonair Micro Orm")
 
 Debonair is a very light weight ORM, that does not contain object tracking, it does not support child objects. Its back to basics, Keep It Simple Stupid.
+
+
+## Updates
+### Update v1.1.0.0
+---
+We have removed the requirement of the base class *DebonairStandard* this was seen by many as breaking separation of concern and merging some of the Data and Business responsibilities, and thus coupling the entities to this ORM. 
+
+We have also removed the attribute decorations for mapping the entities requirements (this is not to be mistaken with validation), as with the original base class requirement it was felt to be harming the separation of code and tightly coupling you into the Debonair ORM.
+
+So, we couldn't just take away a load of features and not give you a way to achieve this, so we present to you in full technicolor! Debonair with its own **fluent mapping API**!  
+
+***Please note: there are no useful unit tests for this library at this time, but we are working on fixing that, sorry to the TDD purests out there.***
+
+---
 
 ## Why Debonair?
 The goal of debonair is to take things back to basics, providing quick data access, while stopping you (the developer) attempting to make the orm do the heavy lifting that should be done by the database. The likes of Entity Framework and Linq2SQL are great, but are very slow, produce horrible sql and let you do a lot of stuff that you really shouldn't be doing.
@@ -12,13 +28,15 @@ The goal of debonair is to take things back to basics, providing quick data acce
 
 ---
 
-## Setup
+## Getting Debonair Setup
 
 Simply build the solution and add the DLL to your projects
 
 **OR**
 
 Debonair is alaso available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
+
+***Debonair v1.1.0.0 is NOT available on Nuget just yet, when this branch is merged back into Master it will become available.  Thank you for understanding.***
 
 
 ## Usage
@@ -65,14 +83,13 @@ public class ServiceManager : IDisposable
 ### Execute a select query
 *Example usage:*
 
-Note: All your entities need to inherit from the Debonair base class **DebonairStandard**
+Note: Your entities no longer need to inherit from the Debonair base class **DebonairStandard**, which has now been removed
 
 #### Gotta Select 'Em All! 
 ```csharp
-public class Customer : DebonairStandard
+public class Customer
 {
-    [KeyProperty(true)]
-    public int Id { get; set; }
+	public int Id { get; set; }
     public string CustomerName { get; set; }
     public DateTime DateOfBirth { get; set; }
     public string EmailAddress { get; set; }
@@ -89,9 +106,8 @@ We harness the power of linq to produce the *WHERE* clauses, this means its slea
 
 
 ```csharp
-public class Customer : DebonairStandard
+public class Customer
 {
-    [KeyProperty(true)]
     public int Id { get; set; }
     public string CustomerName { get; set; }
     public DateTime DateOfBirth { get; set; }
@@ -173,104 +189,125 @@ repo.ExecuteStoredProcedure("dbo.spDeleteCustomersThatAreTooOld", new {MaxAge = 
 
 ## Features
 
+### Fluent Mapping API
+
+NEW to v1.1.0.0 is the Fluent Mapping API, this is designed to help you quickly and easily define the requirements of the properties within youe entities, without tightly coupling your entities to this ORM.
+
+To setup a maping for the *Customer* entity that we saw earlier all we need to do is create a class that will contain our mapping information. This class can be placed anywhere in your system, and by default Debonair will find them and use them. Below is the blank mapping class, and as we continue we will fill it in.
+
+*Example Usage:*
+```csharp
+public class CustomerMapping : EntityMapping<Customer>
+{
+  public CustomerMapping()
+  {
+
+  }
+}
+```
+
 ### Table Names vs Entity Names
-Your entities should reflect the table names within the database, where this isn't so or isn't possible you can use the attribute **Table** to define the tables name.
+Your entities should reflect the table names within the database, where this isn't so or isn't possible you can use the mapping option **SetTableName** to define the tables name.
 
 *Example Usage:*
 You have an Entity called **Customer**, but it is correctly stored in the Database table **Customers**
 
 ```csharp
-[Table("Customers")]
-public class Customer : DebonairStandard
+public class CustomerMapping : EntityMapping<Customer>
 {
-    public int Id { get; set; }
-    public string CustomerName { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
-}   
+  public CustomerMapping()
+  {
+	SetTableName("Customers");
+  }
+}
 ```
 
 ### Columns vs Properties
-The properties of your entities, like tables, should accurately reflect the column names in the database. Where this isn't so or isn't possible you can use the attribute **Column** to define the tables name.  
+The properties of your entities, like tables, should accurately reflect the column names in the database. Where this isn't so or isn't possible you can use the mapping option **Column** to define the tables name.  
 
 *Example Usage:*
 ```csharp
-[Table("Customers")]
-public class Customer : DebonairStandard
+public class CustomerMapping : EntityMapping<Customer>
 {
-    public int Id { get; set; }
-    public string CustomerName { get; set; }
-    [Column("DoB")]
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
-}   
+  public CustomerMapping()
+  {
+	SetTableName("Customers");
+    SetColumnName(x => x.DateOfBirth, "DoB");
+  }
+}  
 ```
 
 ### Schemas
-You may have different schemas within your database, so not all tables sit in *dbo*, if this is the case you can attribute your classes with a schema name using **Schema**
+You may have different schemas within your database, so not all tables sit in *dbo*, if this is the case you can attribute your classes with a schema name using **SetSchemaName**
 This is used when generating the SQL that will be executed by your queries.
 
 *Example Usage:*
 ```csharp
-[Schema("Sales")]
-[Table("Customers")]
-public class Customer : DebonairStandard
+public class CustomerMapping : EntityMapping<Customer>
 {
-    [KeyProperty(true)]
-    public int Id { get; set; }
-    public string CustomerName { get; set; }
-    [Column("DoB")]
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
-}   
+  public CustomerMapping()
+  {
+	SetTableName("Customers");
+    SetSchemaName("Sales");
+    SetColumnName(x => x.DateOfBirth, "DoB");
+  }
+}  
+```
+The mapping system also offers chaining of mappings, if you wish to use it, as seen below: 
+
+*Example Usage:*
+```csharp
+public class CustomerMapping : EntityMapping<Customer>
+{
+  public CustomerMapping()
+  {
+	SetTableName("Customers").SetTableName("Sales");
+    SetColumnName(x => x.DateOfBirth, "DoB");
+  }
+}  
 ```
 
 
 ### Primary Keys
-To define your entity's primary key, use the attribute **KeyProperty**
+To define your entity's primary key, use the mapping option **SetPrimaryKey**
 When inserting a new record, the primary key property will be updated with the new Id from the database.
 
 *Note:* Your primary key needs to be an integer at this point
 
 *Example Usage:*
 ```csharp
-[Schema("Sales")]
-[Table("Customers")]
-public class Customer : DebonairStandard
+public class CustomerMapping : EntityMapping<Customer>
 {
-    [KeyProperty(true)]
-    public int Id { get; set; }
-    public string CustomerName { get; set; }
-    [Column("DoB")]
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
-}   
+  public CustomerMapping()
+  {
+	SetTableName("Customers").SetTableName("Sales");
+    SetColumnName(x => x.DateOfBirth, "DoB");
+    SetPrimaryKey(x => x.Id);
+  }
+}  
 ```
 
 ### Soft Delete
 Rather than deleting a row from the database it is often a requirement that the row is dismissed by the application, this is achieved with an *IsDeleted* type column.
-You can achieve this with the attribute **IsDeletedProperty**
+You can achieve this with the mapping option **IsDeleted**
 
 *Note:* Your IsDeleted property needs to be a boolean
 
 *Example Usage:*
 ```csharp
-[Schema("Sales")]
-[Table("Customers")]
-public class Customer : DebonairStandard
+public class CustomerMapping : EntityMapping<Customer>
 {
-    [KeyProperty(true)]
-    public int Id { get; set; }
-    public string CustomerName { get; set; }
-    [Column("DoB")]
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
-    [IsDeleted]
-    public bool IsDeleted { get; set; }
-}   
+  public CustomerMapping()
+  {
+	SetTableName("Customers").SetTableName("Sales");
+    SetColumnName(x => x.DateOfBirth, "DoB");
+    SetPrimaryKey(x => x.Id);
+    SetIsDeletedProperty(x => x.IsDeleted);
+  }
+}  
 ```
 
-You can override this attribute when required, by passing *true* into the Delete method on the repository.
+You can override this mapping when required, by passing *true* into the Delete method on the repository.
 
 *Example Usage:*
 ```csharp
@@ -278,7 +315,7 @@ var repo = new DataRepository<Customer>(new SqlConnection(ConfigurationManager.C
 
 var customer = repo.Select(x => x.CustomerName.StartsWith("Joe")).FirstOrDefault();
 
-//This would just mark our object as deleted, IF the entity has an IsDeleted attributed property. 
+//This would just mark our object as deleted, IF the entity has an IsDeletedProperty mapping option . 
  repo.Delete(customer);
 
 //This would remove the row from the database
@@ -286,23 +323,31 @@ var foundCustomers = repo.Delete(customer, true);
 ```
 
 ### Ignore me!
-You will at times have properties that have nothing to do with the database structures and you need to tell Debonair to not try and use them. This can be acheived with the attribute **Ignore**
+You will at times have properties that have nothing to do with the database structures and you need to tell Debonair to not try and use them. This can be acheived with the mapping option **Ignore**
 
 *Example Usage:*
 ```csharp
-[Schema("Sales")]
-[Table("Customers")]
-public class Customer : DebonairStandard
+public class Customer
 {
-    [KeyProperty(true)]
-    public int Id { get; set; }
+	public int Id { get; set; }
     public string CustomerName { get; set; }
-    [Column("DoB")]
     public DateTime DateOfBirth { get; set; }
     public string EmailAddress { get; set; }
-    [Ignore]
     public int Age {get { Return (int)(DateTime.Now - DateOfBirth)}};
-}   
+}  
+
+public class CustomerMapping : EntityMapping<Customer>
+{
+  public CustomerMapping()
+  {
+	SetTableName("Customers").SetTableName("Sales");
+    SetColumnName(x => x.DateOfBirth, "DoB");
+    SetPrimaryKey(x => x.Id);
+    SetIsDeletedProperty(x => x.IsDeleted);
+    SetIgnore(x => x.Age);
+  }
+}  
+  
 ```
 
 
