@@ -2,30 +2,16 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Debonair.Entities;
+using Debonair.FluentApi;
 
 namespace Debonair.Data.Orm
 {
-    public interface ICrudGenerator<TEntity> where TEntity : DebonairStandard, new()
+    public interface ICrudGenerator<TEntity> where TEntity : class, new()
     {
 
         #region Properties
-        Dictionary<string,object> SelectParameters { get; set; }
-        bool IsPrimaryKey { get; }
-
-        PropertyMetadata IdentityProperty { get; }
-
-        string TableName { get; }
-
-        string Scheme { get; }
-
-        IEnumerable<PropertyMetadata> KeyProperties { get; }
-
-        IEnumerable<PropertyMetadata> BaseProperties { get; }
-
-        PropertyMetadata IsDeletedProperty { get; }
-
-        bool IsSoftDeletable { get; }
-
+        Dictionary<string, object> SelectParameters { get; set; }
+        IEntityMapping<TEntity> EntityMapping { get; }
         #endregion
 
         #region Functions

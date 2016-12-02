@@ -10,7 +10,7 @@ namespace Debonair.Tests.Data
     [TestClass]
     public class DataRepositoryTests
     {
-        readonly IDataRepository<TestObject> repo = new DataRepository<TestObject>(new SqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString));
+        readonly IDataRepository<DeleteableTestObject> repo = new DataRepository<DeleteableTestObject>(new SqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString));
 
         [TestMethod]
         public void SelectTest()

@@ -45,9 +45,7 @@
     <Compile Include="Data\Context\SqlContext.cs" />
     <Compile Include="Data\DataRepository.cs" />
     <Compile Include="Data\IDataRepository.cs" />
-    <Compile Include="Data\Orm\Attributes.cs" />
     <Compile Include="Data\Orm\ICrudGenerator.cs" />
-    <Compile Include="Data\Orm\PropertyMetadata.cs" />
     <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\LikeNode.cs" />
     <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\MemberNode.cs" />
     <Compile Include="Data\Orm\QueryBuilder\ExpressionTree\Node.cs" />
@@ -57,8 +55,13 @@
     <Compile Include="Data\Orm\QueryBuilder\LambdaToSql.cs" />
     <Compile Include="Data\Orm\QueryBuilder\SqlBuilder.cs" />
     <Compile Include="Data\Orm\SqlCrudGenerator.cs" />
-    <Compile Include="Entities\DebonairEntity.cs" />
     <Compile Include="Entities\Enums.cs" />
+    <Compile Include="FluentApi\EntityMapping.cs" />
+    <Compile Include="FluentApi\EntityMappingEngine.cs" />
+    <Compile Include="FluentApi\IEntityMapping.cs" />
+    <Compile Include="FluentApi\IPropertyMapping.cs" />
+    <Compile Include="FluentApi\PropertyMapping.cs" />
+    <Compile Include="Framework\Exceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Extensions\DateExts.cs" />
     <Compile Include="Utilities\Extensions\DbDataReaderExts.cs" />

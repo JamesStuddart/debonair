@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using Debonair.Data.Orm;
+using Debonair.FluentApi;
 
 namespace Debonair.Utilities.Extensions
 {
     public static class DbDataReaderExts
     {
-        public static List<T> MapTo<T>(this IDataReader dr)
+        public static List<TEntity> MapTo<TEntity>(this IDataReader dr) where TEntity : class, new()
         {
-            var list = new List<T>();
+            var list = new List<TEntity>();
             while (dr.Read())
             {
-                var obj = Activator.CreateInstance<T>();
+                var obj = Activator.CreateInstance<TEntity>();
                 try
                 {
-                    foreach (var prop in obj.GetType().GetProperties())
+                    var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+
+                        foreach (var prop in obj.GetType().GetProperties())
                     {
-                        var ignore = (Ignore)prop.GetCustomAttributes(typeof(Ignore), false).FirstOrDefault();
-                        if (ignore != null) continue;
+                        var propMapping = mapping.GetMappingForType(prop);
 
-                        var attr = (Column)prop.GetCustomAttributes(typeof(Column), false).FirstOrDefault();
+                        if (propMapping.IsIgnored) continue;
 
-                        var colName = attr != null ? attr.Value : prop.Name;
+                        var colName = !string.IsNullOrEmpty(propMapping.ColumnName) ? propMapping.ColumnName : prop.Name;
 
                         if (!HasColumn(dr, colName)) continue;
 

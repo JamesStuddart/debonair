@@ -8,7 +8,7 @@ using Debonair.Entities;
 
 namespace Debonair.Data
 {
-    public interface IDataRepository<TEntity> where TEntity : DebonairStandard, new()
+    public interface IDataRepository<TEntity> where TEntity : class, new()
     {
         IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true);
 
