@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Debonair</id>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
         <authors>James Studdart</authors>
         <licenseUrl>https://github.com/JamesStuddart/debonair/blob/master/License</licenseUrl>
         <projectUrl>https://github.com/JamesStuddart/debonair</projectUrl>
