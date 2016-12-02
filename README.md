@@ -36,9 +36,6 @@ Simply build the solution and add the DLL to your projects
 
 Debonair is alaso available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
 
-***Debonair v1.1.0.0 is NOT available on Nuget just yet.  Thank you for understanding.***
-
-
 ## Usage
 Debonair uses standard connection strings, but currently only supports Microsoft SQL Server, it also manages the connection state, you do not need to open and close the connections yourself.
 
