@@ -36,7 +36,7 @@ Simply build the solution and add the DLL to your projects
 
 Debonair is alaso available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
 
-***Debonair v1.1.0.0 is NOT available on Nuget just yet, when this branch is merged back into Master it will become available.  Thank you for understanding.***
+***Debonair v1.1.0.0 is NOT available on Nuget just yet.  Thank you for understanding.***
 
 
 ## Usage
