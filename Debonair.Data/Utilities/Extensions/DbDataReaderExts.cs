@@ -23,8 +23,8 @@ namespace Debonair.Utilities.Extensions
 
                         if (propMapping.IsIgnored) continue;
 
-                        var colName = !string.IsNullOrEmpty(propMapping.ColumnName) ? propMapping.ColumnName : prop.Name;
-
+                        var colName = prop.Name;
+                        
                         if (!HasColumn(dr, colName)) continue;
 
                         if (!Equals(dr[colName], DBNull.Value))
