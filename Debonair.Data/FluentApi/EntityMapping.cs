@@ -60,7 +60,7 @@ namespace Debonair.FluentApi
 
         public IEntityMapping<TEntity> SetSchemaName(string schemaName)
         {
-            SchemaName = schemaName;
+            SchemaName = schemaName ?? "dbo";
             return this;
         }
 
