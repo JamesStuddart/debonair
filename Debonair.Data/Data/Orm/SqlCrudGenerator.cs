@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,6 +93,7 @@ namespace Debonair.Data.Orm
                     0);
             }
 
+            SelectParameters = sqlGenerator.SelectParameters;
 
             return strBuilder.ToString();
         }
