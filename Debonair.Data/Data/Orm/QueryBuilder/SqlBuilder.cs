@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
@@ -49,8 +49,7 @@ namespace Debonair.Data.Orm.QueryBuilder
                     value = "%" + node.Value + "%";
                     break;
                 case LikeMethod.Equals:
-                    QueryByField(node.MemberNode.TableName, node.MemberNode.FieldName,
-                        operationDictionary[ExpressionType.Equal], node.Value);
+                    QueryByField(node.MemberNode.TableName, node.MemberNode.FieldName,operationDictionary[ExpressionType.Equal], node.Value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -73,6 +72,7 @@ namespace Debonair.Data.Orm.QueryBuilder
             if (nodeType == typeof (MemberNode))
             {
                 QueryByField(node.TableName, node.FieldName, operationDictionary[ExpressionType.Equal], true);
+
                 return;
             }
 
@@ -198,14 +198,18 @@ namespace Debonair.Data.Orm.QueryBuilder
 
         private void QueryByField(string tableName, string fieldName, string op, object fieldValue)
         {
-            //conditions.Append($"{$"[{tableName}].[{fieldName}]"} {op} {ParameterFormat(fieldValue)}");
-            sqlParameters.Add(fieldName,fieldValue);
+            sqlParameters.Add(fieldName, fieldValue);
+            conditions.Append($"{$"[{tableName}].[{fieldName}]"} {op} @{fieldName}");
+        }
+
+        private void QueryByField(string tableName, string fieldName, string op, bool fieldValue)
+        {
+            sqlParameters.Add(fieldName, fieldValue ? "1" : "0");
             conditions.Append($"{$"[{tableName}].[{fieldName}]"} {op} @{fieldName}");
         }
 
         private void QueryByFieldLike(string tableName, string fieldName, string fieldValue)
         {
-            //conditions.Append($"{$"[{tableName}].[{fieldName}]"} LIKE {ParameterFormat(fieldValue)}");
             sqlParameters.Add(fieldName,fieldValue);
             conditions.Append($"{$"[{tableName}].[{fieldName}]"} LIKE @{fieldName}");
         }
