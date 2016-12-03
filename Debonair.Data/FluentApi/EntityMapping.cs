@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -20,6 +20,7 @@ namespace Debonair.FluentApi
         protected internal EntityMapping(IList<IPropertyMapping> propertyMappers = null)
         {
             PropertyMappings = propertyMappers ?? DefineMappings();
+            SchemaName = "dbo";
         }
 
         public IPropertyMapping GetMappingForType(PropertyInfo info)
@@ -60,7 +61,7 @@ namespace Debonair.FluentApi
 
         public IEntityMapping<TEntity> SetSchemaName(string schemaName)
         {
-            SchemaName = schemaName ?? "dbo";
+            SchemaName = schemaName;
             return this;
         }
 
