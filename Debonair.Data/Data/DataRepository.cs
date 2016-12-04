@@ -17,7 +17,6 @@ namespace Debonair.Data
         private readonly ICrudGenerator<TEntity> sqlGenerator;
         private readonly IContext dataContext;
 
-
         public DataRepository(SqlConnection sqlConnection, ICrudGenerator<TEntity> generator = null, IContext context = null)
         {
             sqlGenerator = generator ?? new SqlCrudGenerator<TEntity>();

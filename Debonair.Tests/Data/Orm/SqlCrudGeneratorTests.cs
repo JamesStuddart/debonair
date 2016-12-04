@@ -1,4 +1,5 @@
-﻿using Debonair.Data.Orm;
+﻿using System;
+using Debonair.Data.Orm;
 using Debonair.Tests.MockObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -99,6 +100,23 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereIsNotNull()
         {
             var sql = sqlGenerator.Select(x => x.CustomerName != null); 
+        }
+
+        [TestMethod]
+        public void SelectWhereDateTimeHasValue()
+        {
+            var sql = sqlGenerator.Select(x => x.CreatedDate == null); 
+        }
+
+        [TestMethod]
+        public void SelectWhereDateTimeDoesNotHasValue()
+        {
+            var sql = sqlGenerator.Select(x => x.CreatedDate != null); 
+        }
+        [TestMethod]
+        public void SelectWhereDateTimeEquals()
+        {
+            var sql = sqlGenerator.Select(x => x.CreatedDate == DateTime.UtcNow); 
         }
 
         [TestMethod]

@@ -113,11 +113,10 @@ namespace Debonair.Data.Orm.QueryBuilder
         private Node ResolveQuery(MemberExpression memberExpression, MemberExpression rootExpression = null)
         {
             rootExpression = rootExpression ?? memberExpression;
-
-            if (memberExpression.Type.FullName == typeof(DateTime).FullName)
+            
+            if (memberExpression.Expression == null)
             {
-                //TODO: Add support for datetime
-                throw new NotSupportedException("DateTime is not currently supported");
+                return new ValueNode {Value =  Expression.Lambda(memberExpression).Compile().DynamicInvoke() };
             }
 
             switch (memberExpression.Expression.NodeType)

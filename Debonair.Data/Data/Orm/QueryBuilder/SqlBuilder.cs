@@ -10,7 +10,7 @@ namespace Debonair.Data.Orm.QueryBuilder
     internal class SqlBuilder
     {
         private readonly StringBuilder conditions = new StringBuilder();
-        private readonly Dictionary<string, object> sqlParameters =  new Dictionary<string, object>();
+        private readonly Dictionary<string, object> sqlParameters = new Dictionary<string, object>();
 
 
         private readonly Dictionary<ExpressionType, string> operationDictionary = new Dictionary<ExpressionType, string>
@@ -26,7 +26,7 @@ namespace Debonair.Data.Orm.QueryBuilder
 
         public string GenerateSql(Node node, out Dictionary<string, object> parameters)
         {
-            BuildSql((dynamic) node);
+            BuildSql((dynamic)node);
             AddWhere();
             parameters = sqlParameters;
             return conditions.ToString();
@@ -49,7 +49,7 @@ namespace Debonair.Data.Orm.QueryBuilder
                     value = "%" + node.Value + "%";
                     break;
                 case LikeMethod.Equals:
-                    QueryByField(node.MemberNode.TableName, node.MemberNode.FieldName,operationDictionary[ExpressionType.Equal], node.Value);
+                    QueryByField(node.MemberNode.TableName, node.MemberNode.FieldName, operationDictionary[ExpressionType.Equal], node.Value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -62,14 +62,14 @@ namespace Debonair.Data.Orm.QueryBuilder
         {
             var nodeType = node.GetType();
 
-            if (nodeType == typeof (OperationNode))
+            if (nodeType == typeof(OperationNode))
             {
                 BuildSql(node.Left, node.Right, node.Operator);
                 return;
             }
 
 
-            if (nodeType == typeof (MemberNode))
+            if (nodeType == typeof(MemberNode))
             {
                 QueryByField(node.TableName, node.FieldName, operationDictionary[ExpressionType.Equal], true);
 
@@ -77,15 +77,12 @@ namespace Debonair.Data.Orm.QueryBuilder
             }
 
 
-            if (nodeType == typeof (SingleOperationNode))
+            if (nodeType == typeof(SingleOperationNode))
             {
                 if (node.Operator == ExpressionType.Not)
                     AddNot();
                 BuildSql(node.Child);
-                return;
             }
-
-
         }
 
         private void BuildSql(MemberNode memberNode, ValueNode valueNode, ExpressionType operatorType)
@@ -117,7 +114,7 @@ namespace Debonair.Data.Orm.QueryBuilder
             if (leftMember.Operator == ExpressionType.Not)
                 BuildSql(leftMember as Node, rightMember, operatorType);
             else
-                BuildSql((dynamic) leftMember.Child, (dynamic) rightMember, operatorType);
+                BuildSql((dynamic)leftMember.Child, (dynamic)rightMember, operatorType);
         }
 
         private void BuildSql(Node leftMember, SingleOperationNode rightMember, ExpressionType operatorType)
@@ -128,9 +125,9 @@ namespace Debonair.Data.Orm.QueryBuilder
         private void BuildSql(Node leftNode, Node rightNode, ExpressionType operatorType)
         {
             BeginExpression();
-            BuildSql((dynamic) leftNode);
+            BuildSql((dynamic)leftNode);
             ResolveOperation(operatorType);
-            BuildSql((dynamic) rightNode);
+            BuildSql((dynamic)rightNode);
             EndExpression();
         }
 
@@ -158,6 +155,9 @@ namespace Debonair.Data.Orm.QueryBuilder
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
                     AddOr();
+                    break;
+                case ExpressionType.Equal:
+                    AddEquals();
                     break;
                 default:
                     throw new ArgumentException($"Unrecognized binary expression operation '{op}'");
@@ -196,39 +196,39 @@ namespace Debonair.Data.Orm.QueryBuilder
             conditions.Insert(0, " WHERE ");
         }
 
-        private void QueryByField(string tableName, string fieldName, string op, object fieldValue)
+        private void AddEquals()
         {
-            sqlParameters.Add(fieldName, fieldValue);
-            conditions.Append($"{$"[{tableName}].[{fieldName}]"} {op} @{fieldName}");
+            conditions.Insert(0, " = ");
         }
 
-        private void QueryByField(string tableName, string fieldName, string op, bool fieldValue)
+        private void QueryByField(string tableName, string fieldName, string op, object fieldValue)
         {
-            sqlParameters.Add(fieldName, fieldValue ? "1" : "0");
-            conditions.Append($"{$"[{tableName}].[{fieldName}]"} {op} @{fieldName}");
+            sqlParameters.Add(fieldName, ParameterFormat(fieldValue));
+            conditions.Append($"[{tableName}].[{fieldName}] {op} @{fieldName}");
         }
+
 
         private void QueryByFieldLike(string tableName, string fieldName, string fieldValue)
         {
-            sqlParameters.Add(fieldName,fieldValue);
-            conditions.Append($"{$"[{tableName}].[{fieldName}]"} LIKE @{fieldName}");
+            sqlParameters.Add(fieldName, ParameterFormat(fieldValue));
+            conditions.Append($"[{tableName}].[{fieldName}] LIKE @{fieldName}");
         }
 
         private void QueryByFieldNull(string tableName, string fieldName)
         {
-            conditions.Append($"{$"[{tableName}].[{fieldName}]"} IS NULL");
+            conditions.Append($"[{tableName}].[{fieldName}] IS NULL");
         }
 
         private void QueryByFieldNotNull(string tableName, string fieldName)
         {
-            conditions.Append($"{$"[{tableName}].[{fieldName}]"} IS NOT NULL");
+            conditions.Append($"[{tableName}].[{fieldName}] IS NOT NULL");
         }
 
         private void QueryByFieldComparison(string leftTableName, string leftFieldName, string op, string rightTableName,
             string rightFieldName)
         {
 
-            conditions.Append($"{$"[{leftTableName}].[{leftFieldName}]"} {op} {$"{rightTableName}.{rightFieldName}"}");
+            conditions.Append($"[{leftTableName}].[{leftFieldName}] {op} {rightTableName}.{rightFieldName}");
         }
 
         private static string ParameterFormat(object parameter)
@@ -243,7 +243,11 @@ namespace Debonair.Data.Orm.QueryBuilder
                     break;
 
                 case TypeCode.Boolean:
-                    returnValue = (((bool) parameter) ? 1 : 0).ToString();
+                    returnValue = (((bool)parameter) ? 1 : 0).ToString();
+                    break;
+
+                case TypeCode.DateTime:
+                    returnValue = ((DateTime)parameter).ToString("yyyy-MM-dd HH:mm:ss");
                     break;
             }
 

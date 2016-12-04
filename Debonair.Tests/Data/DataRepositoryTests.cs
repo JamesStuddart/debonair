@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using Debonair.Data;
@@ -15,7 +16,7 @@ namespace Debonair.Tests.Data
         [TestMethod]
         public void SelectTest()
         {
-          var results = repo.Select();
+          var results = repo.Select(x=>x.CreatedDate == DateTime.UtcNow);
          }
 
         [TestMethod]
