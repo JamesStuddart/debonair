@@ -11,7 +11,7 @@ namespace Debonair.Data.Orm.QueryBuilder
 {
     internal class LambdaToSql<TEntity> where TEntity : class, new()
     {
-        public IEntityMapping<TEntity> EntityMapping { get; }
+        private IEntityMapping<TEntity> EntityMapping { get; }
 
         //public bool ContainsIsDeleteable { get; private set; }
         public Dictionary<string, object> SelectParameters = new Dictionary<string, object>();

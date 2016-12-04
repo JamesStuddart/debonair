@@ -45,7 +45,6 @@ namespace Debonair.Data
             disposed = true;
         }
 
-
         public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true)
         {
             var sql = sqlGenerator.Select(predicate, dirtyRead);
@@ -64,7 +63,6 @@ namespace Debonair.Data
             propMapping?.PropertyInfo.SetValue(entity, Convert.ChangeType(newId, propMapping.PropertyInfo.PropertyType), null);
 
             return true;
-
         }
 
         public bool Update(TEntity entity)
@@ -92,7 +90,6 @@ namespace Debonair.Data
         {
             return dataContext.ExecuteStoredProcedure<TEntity>(spName);
         }
-
 
         public void ExecuteNonQueryStoredProcedure(string spName, object parameters)
         {

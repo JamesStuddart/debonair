@@ -109,7 +109,7 @@ namespace Debonair.Data.Orm
                 strBuilder.AppendFormat("DELETE FROM [{0}].[{1}] WHERE {2}",
                     EntityMapping.SchemaName,
                     EntityMapping.TableName,
-                    string.Join(" AND ", $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
+                    string.Join(" AND ", $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
 
             }
             else
@@ -118,7 +118,7 @@ namespace Debonair.Data.Orm
                                  EntityMapping.SchemaName,
                     EntityMapping.TableName,
                  $"[{EntityMapping.TableName}].[{EntityMapping.IsDeletedProperty.ColumnName}] = 1",
-                                 string.Join(" AND ", $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
+                                 string.Join(" AND ", $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
             }
 
             return strBuilder.ToString();

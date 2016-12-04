@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using Debonair.Data;
 using Debonair.Tests.MockObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,13 +15,13 @@ namespace Debonair.Tests.Data
         [TestMethod]
         public void SelectTest()
         {
-          var results = repo.Select(x=>x.CreatedDate == DateTime.UtcNow);
-         }
+            var results = repo.Select(x => x.CreatedDate == DateTime.UtcNow);
+        }
 
         [TestMethod]
         public void StoredProcedureTest()
         {
-            var results = repo.ExecuteStoredProcedure("dbo.spName", new {Id = 1, CustomerName = "Joe Bloggs"});
+            var results = repo.ExecuteStoredProcedure("dbo.spName", new { Id = 1, CustomerName = "Joe Bloggs" });
         }
     }
 }
