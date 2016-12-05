@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Debonair.Data.Orm;
 using Debonair.Tests.MockObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,6 +16,7 @@ namespace Debonair.Tests.Data.Orm
         public void SelectAll()
         {
             var sql = sqlGenerator.Select();
+            Assert.IsFalse(sqlGenerator.SelectParameters.Any());
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK)");
         }
@@ -23,6 +25,11 @@ namespace Debonair.Tests.Data.Orm
         public void SelectByInt()
         {
             var sql = sqlGenerator.Select(x => x.Id == 1);
+
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1,sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "Id");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "1");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[Id] = @Id");
         }
@@ -31,6 +38,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectByString()
         {
             var sql = sqlGenerator.Select(x => x.CustomerName == "'; DROP TABLE Users;--");
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "''; DROP TABLE Users;--'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CustomerName] = @CustomerName");
         }
@@ -39,6 +50,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectByBoolTrue()
         {
             var sql = sqlGenerator.Select(x => x.IsActive);
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "IsActive");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "1");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[IsActive] = @IsActive");
         }
@@ -47,6 +62,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectByBoolFalse()
         {
             var sql = sqlGenerator.Select(x => !x.IsActive);
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "IsActive");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "1");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE  NOT [DeletetableTestTable].[IsActive] = @IsActive");
         }
@@ -55,6 +74,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereEnum()
         {
             var sql = sqlGenerator.Select(x => x.Status == TestStatus.dead);
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "Status");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "200");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[Status] = @Status");
         }
@@ -63,6 +86,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereNotEnum()
         {
             var sql = sqlGenerator.Select(x => x.Status != TestStatus.dead);
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "Status");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "200");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[Status] != @Status");
         }
@@ -71,6 +98,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereLike()
         {
             var sql = sqlGenerator.Select(x => x.CustomerName.Contains("Smith"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "'%Smith%'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CustomerName] LIKE @CustomerName");
         }
@@ -79,6 +110,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereNotLike()
         {
             var sql = sqlGenerator.Select(x => !x.CustomerName.Contains("Bloggs"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "'%Bloggs%'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE  NOT [DeletetableTestTable].[CustomerName] LIKE @CustomerName");
         }
@@ -87,6 +122,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereStartsWith()
         {
             var sql = sqlGenerator.Select(x => x.CustomerName.StartsWith("Joe"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "'Joe%'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CustomerName] LIKE @CustomerName");
         }
@@ -95,6 +134,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereNotStartsWith()
         {
             var sql = sqlGenerator.Select(x => !x.CustomerName.StartsWith("Joe"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "'Joe%'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE  NOT [DeletetableTestTable].[CustomerName] LIKE @CustomerName");
         }
@@ -103,6 +146,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereEndsWith()
         {
             var sql = sqlGenerator.Select(x => x.CustomerName.EndsWith("Bloggs"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "'%Bloggs'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CustomerName] LIKE @CustomerName");
         }
@@ -111,6 +158,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereNotEndsWith()
         {
             var sql = sqlGenerator.Select(x => !x.CustomerName.EndsWith("Bloggs"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CustomerName");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "'%Bloggs'");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE  NOT [DeletetableTestTable].[CustomerName] LIKE @CustomerName");
 
@@ -120,6 +171,7 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereIsNull()
         {
             var sql = sqlGenerator.Select(x => x.CustomerName == null);
+            Assert.IsTrue(!sqlGenerator.SelectParameters.Any());
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CustomerName] IS NULL");
         }
@@ -136,7 +188,7 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereDateTimeHasValue()
         {
             var sql = sqlGenerator.Select(x => x.CreatedDate == null);
-
+            Assert.IsTrue(!sqlGenerator.SelectParameters.Any());
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CreatedDate] IS NULL");
         }
@@ -145,6 +197,7 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereDateTimeDoesNotHasValue()
         {
             var sql = sqlGenerator.Select(x => x.CreatedDate != null);
+            Assert.IsTrue(!sqlGenerator.SelectParameters.Any());
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CreatedDate] IS NOT NULL");
         }
@@ -152,7 +205,11 @@ namespace Debonair.Tests.Data.Orm
         [TestMethod]
         public void SelectWhereDateTimeEquals()
         {
-            var sql = sqlGenerator.Select(x => x.CreatedDate == DateTime.UtcNow);
+            var sql = sqlGenerator.Select(x => x.CreatedDate == DateTime.Parse("01/01/2016"));
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "CreatedDate");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "2016-01-01 00:00:00");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[CreatedDate] = @CreatedDate");
         }
@@ -193,6 +250,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereIsDeleted()
         {
             var sql = sqlGenerator.Select(x => x.IsDeleted);
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "IsDeleted");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "1");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE [DeletetableTestTable].[IsDeleted] = @IsDeleted");
         }
@@ -201,6 +262,10 @@ namespace Debonair.Tests.Data.Orm
         public void SelectWhereIsNotDeleted()
         {
             var sql = sqlGenerator.Select(x => !x.IsDeleted);
+            Assert.IsTrue(sqlGenerator.SelectParameters.Any());
+            Assert.AreEqual(1, sqlGenerator.SelectParameters.Count());
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Key == "IsDeleted");
+            Assert.IsTrue(sqlGenerator.SelectParameters.First().Value.ToString() == "1");
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK) WHERE  NOT [DeletetableTestTable].[IsDeleted] = @IsDeleted");
         }
