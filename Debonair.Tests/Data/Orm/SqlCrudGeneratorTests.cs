@@ -20,7 +20,7 @@ namespace Debonair.Tests.Data.Orm
             Assert.AreEqual(sql,
                 "SELECT [DeletetableTestTable].[ClientName] AS [CustomerName], [DeletetableTestTable].[CreatedDate], [DeletetableTestTable].[IsActive], [DeletetableTestTable].[IsDeleted] FROM [DeletetableTestSchema].[DeletetableTestTable] WITH (NOLOCK)");
         }
-
+        
         [TestMethod]
         public void SelectByInt()
         {
