@@ -14,7 +14,6 @@ namespace Debonair.Data.Orm.QueryBuilder
 
 
         private readonly Dictionary<ExpressionType, string> operationDictionary = new Dictionary<ExpressionType, string>
-            ()
         {
             {ExpressionType.Equal, "="},
             {ExpressionType.NotEqual, "!="},

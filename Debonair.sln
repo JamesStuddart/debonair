@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debonair", "Debonair.Data\Debonair.csproj", "{B8C24577-FAE7-4C04-AB54-8C94262C2FE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debonair.Tests", "Debonair.Tests\Debonair.Tests.csproj", "{F0C9C7A1-EE06-4A9B-80C4-F3DE9B1BABF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debonair.UnitTests", "Debonair.UnitTests\Debonair.UnitTests.csproj", "{7546D6AD-B6AB-413F-90F2-FF6F67DC1AC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{F0C9C7A1-EE06-4A9B-80C4-F3DE9B1BABF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0C9C7A1-EE06-4A9B-80C4-F3DE9B1BABF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0C9C7A1-EE06-4A9B-80C4-F3DE9B1BABF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7546D6AD-B6AB-413F-90F2-FF6F67DC1AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7546D6AD-B6AB-413F-90F2-FF6F67DC1AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7546D6AD-B6AB-413F-90F2-FF6F67DC1AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7546D6AD-B6AB-413F-90F2-FF6F67DC1AC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
