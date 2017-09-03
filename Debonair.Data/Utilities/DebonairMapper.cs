@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using Debonair.FluentApi;
 
 namespace Debonair.Utilities
 {
     public static class DebonairMapper
     {
+
+        private static readonly MappingCache MappingCache = new MappingCache();
 
         /// <typeparam name="TEntity">Objet you want to map TO</typeparam>
         /// <param name="source">Objet you want to map FROM</param>
@@ -42,17 +43,13 @@ namespace Debonair.Utilities
             return destination;
         }
 
-        public static List<SqlParameter> ToSqlParameters<TEntity>(this object source) where TEntity : class
+        public static List<SqlParameter> ToSqlParameters<TEntity>(this object source) where TEntity : class, new()
         {
             var list = new List<SqlParameter>();
-
-            var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
-
+            
             foreach (var prop in source.GetType().GetProperties())
             {
-                var propMapping = mapping.GetMappingForType(prop);
-                  
-                if (propMapping.IsIgnored) continue;
+                if (MappingCache.GetMapping<TEntity>(prop).IsIgnored) continue;
 
                 list.Add(new SqlParameter(prop.Name, prop.GetValue(source, null)));
             }
