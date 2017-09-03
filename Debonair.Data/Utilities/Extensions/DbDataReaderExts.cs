@@ -8,8 +8,6 @@ namespace Debonair.Utilities.Extensions
     {
         private static readonly EntityCache EntityCache = new EntityCache();
         private static readonly MappingCache MappingCache = new MappingCache();
-        private static readonly HashSet<int> ColHashSet = new HashSet<int>();
-        private static string _tableName;
 
         public static List<TEntity> MapTo<TEntity>(this IDataReader dr) where TEntity : class, new()
         {
@@ -38,19 +36,15 @@ namespace Debonair.Utilities.Extensions
 
         public static bool HasColumn(IDataReader reader, string columnName)
         {
-            var tblName = reader.GetSchemaTable().TableName;
-
-            if (ColHashSet.Count > 0 && _tableName != tblName)
+            for (var i = 0; i < reader.FieldCount; i++)
             {
-                _tableName = tblName;
-
-                foreach (DataColumn column in reader.GetSchemaTable().Columns)
+                if (reader.GetName(i).Equals(columnName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ColHashSet.Add(column.ColumnName.ToLower().GetHashCode());
+                    return true;
                 }
             }
 
-            return ColHashSet.Contains(columnName.ToLower().GetHashCode());
+            return false;
         }
     }
 
