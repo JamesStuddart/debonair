@@ -21,6 +21,7 @@ namespace Debonair.FluentApi
         {
             PropertyMappings = propertyMappers ?? DefineMappings();
             SchemaName = "dbo";
+            TableName = typeof(TEntity).Name;
         }
 
         public IPropertyMapping GetMappingForType(PropertyInfo info)
