@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using Debonair.Utilities.Extensions;
 
 
@@ -11,11 +10,11 @@ namespace Debonair.Data.Context
     {
         private bool disposed;
 
-        public SqlConnection SqlConnection { get; set; }
+        public IDbConnection dbConnection { get; set; }
 
-        public SqlContext(SqlConnection connection)
+        public SqlContext(IDbConnection connection)
         {
-            SqlConnection = connection;
+            dbConnection = connection;
         }
 
         ~SqlContext()
@@ -25,15 +24,15 @@ namespace Debonair.Data.Context
 
         public void Open()
         {
-            if (SqlConnection.State == ConnectionState.Closed)
+            if (dbConnection.State == ConnectionState.Closed)
             {
-                SqlConnection.Open();
+                dbConnection.Open();
             }
         }
 
         public void Close()
         {
-            SqlConnection.Close();
+            dbConnection.Close();
         }
 
         public void Dispose()
@@ -48,16 +47,16 @@ namespace Debonair.Data.Context
 
             if (dispose)
             {
-                SqlConnection.Close();
+                dbConnection.Close();
             }
 
             disposed = true;
         }
 
         #region nonquery
-        public void ExecuteNonQuery(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text)
+        public void ExecuteNonQuery(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text)
         {
-            var cmd = SqlConnection.CreateCommand();
+            var cmd = dbConnection.CreateCommand();
             cmd.CommandType = commandType;
             cmd.CommandText = sql;
 
@@ -81,14 +80,14 @@ namespace Debonair.Data.Context
 
         public void ExecuteNonQuery(string sql)
         {
-            ExecuteNonQuery(sql, new List<SqlParameter>());
+            ExecuteNonQuery(sql, new List<IDbDataParameter>());
         }
         #endregion nonquery
 
         #region ExecuteScalar
-        public int ExecuteScalar<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
+        public int ExecuteScalar<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
-            var cmd = SqlConnection.CreateCommand();
+            var cmd = dbConnection.CreateCommand();
             cmd.CommandType = commandType;
             cmd.CommandText = sql;
 
@@ -115,15 +114,15 @@ namespace Debonair.Data.Context
         
         public int ExecuteScalar<TEntity>(string sql) where TEntity : class, new()
         {
-            return ExecuteScalar<TEntity>(sql, new List<SqlParameter>());
+            return ExecuteScalar<TEntity>(sql, new List<IDbDataParameter>());
         }
         #endregion ExecuteScalar
 
         #region query
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql, List<SqlParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
+        public IEnumerable<TEntity> Query<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
-            var cmd = SqlConnection.CreateCommand();
+            var cmd = dbConnection.CreateCommand();
             cmd.CommandType = commandType;
             cmd.CommandText = sql;
 
@@ -148,35 +147,35 @@ namespace Debonair.Data.Context
             return result;
         }
 
-        public IEnumerable<TEntity> Query<TEntity>(string sql, SqlParameter parameter) where TEntity : class, new()
+        public IEnumerable<TEntity> Query<TEntity>(string sql, IDbDataParameter parameter) where TEntity : class, new()
         {
-            return Query<TEntity>(sql, new List<SqlParameter> { parameter });
+            return Query<TEntity>(sql, new List<IDbDataParameter> { parameter });
         }
 
         public IEnumerable<TEntity> Query<TEntity>(string sql, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
-            return Query<TEntity>(sql, new List<SqlParameter>());
+            return Query<TEntity>(sql, new List<IDbDataParameter>());
         }
 
-        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, List<SqlParameter> parameters) where TEntity : class, new()
+        public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, List<IDbDataParameter> parameters) where TEntity : class, new()
         {
             return Query<TEntity>(spName, parameters, CommandType.StoredProcedure);
 
         }
 
-        public void ExecuteStoredProcedure(string spName, List<SqlParameter> parameters)
+        public void ExecuteStoredProcedure(string spName, List<IDbDataParameter> parameters)
         {
              ExecuteNonQuery(spName, parameters, CommandType.StoredProcedure);
         }
 
         public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName) where TEntity : class, new()
         {
-            return Query<TEntity>(spName, new List<SqlParameter>(), CommandType.StoredProcedure);
+            return Query<TEntity>(spName, new List<IDbDataParameter>(), CommandType.StoredProcedure);
         }
 
         public void ExecuteStoredProcedure(string spName)
         {
-             ExecuteNonQuery(spName, new List<SqlParameter>(), CommandType.StoredProcedure);
+             ExecuteNonQuery(spName, new List<IDbDataParameter>(), CommandType.StoredProcedure);
         }
 
         #endregion query

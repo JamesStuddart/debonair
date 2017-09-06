@@ -4,21 +4,30 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Company>James Studdart</Company>
     <Authors>James Studdart</Authors>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Copyright>Copyright ©  2017</Copyright>
-    <Description>Debonair MirosOrm</Description>
+    <Description>Debonair is a very light weight ORM, that does not contain object tracking, it does not support child objects. Its back to basics, Keep It Simple Stupid.</Description>
     <PackageLicenseUrl>https://github.com/JamesStuddart/debonair/blob/master/License</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JamesStuddart/debonair</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JamesStuddart/debonair</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIconUrl>https://camo.githubusercontent.com/aa2d5df0160d0d8c4eb7f91d0e7777ab56754e5d/687474703a2f2f6a616d657373747564646172742e636f2e756b2f436f6e74656e742f496d616765732f6465626f6e6169722d726f756e642e706e67</PackageIconUrl>
+    <PackageReleaseNotes>Changes:
+- Removed Reliance on SqlClient and SqlParameter, not uses IDbConnection and IDbParameters so should work for other database not just Microsoft Sql
+
+Bugs Fixed:
+- Fixed issue where primary key was not returned in select
+- Fixed inability to update due to passing in an empty primary value
+- Fixed issue where Ignored properties were still in the sql statement</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="microsoft.csharp" Version="4.4.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="2.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="system.linq" Version="4.3.0" />
     <PackageReference Include="system.reflection" Version="4.3.0" />

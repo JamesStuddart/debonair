@@ -32,8 +32,8 @@ namespace Debonair.Data.Orm
             }
             
 
-            var columNames = string.Join(", ", EntityMapping.Properties.Select(p => !string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]"));
-            var values = string.Join(", ", EntityMapping.Properties.Select(p => $"@{p.PropertyInfo.Name}"));
+            var columNames = string.Join(", ", EntityMapping.Properties.Where(x => !x.IsIgnored).Select(p => !string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]"));
+            var values = string.Join(", ", EntityMapping.Properties.Where(x => !x.IsIgnored).Select(p => $"@{p.PropertyInfo.Name}"));
 
             var strBuilder = new StringBuilder();
             strBuilder.AppendFormat("INSERT INTO [{0}].[{1}] {2} {3} ",
@@ -60,7 +60,7 @@ namespace Debonair.Data.Orm
             strBuilder.AppendFormat("UPDATE [{0}].[{1}] SET {2} WHERE {3}",
                                          EntityMapping.SchemaName,
                                          EntityMapping.TableName,
-                                         string.Join(", ", EntityMapping.Properties.Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]") + $" = @{p.PropertyInfo.Name}")),
+                                         string.Join(", ", EntityMapping.Properties.Where(x=>!x.IsIgnored && !x.IsPrimaryKey).Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]") + $" = @{p.PropertyInfo.Name}")),
                                          $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
 
             return strBuilder.ToString();

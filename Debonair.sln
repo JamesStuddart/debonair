@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Debonair", "Debonair.Data\Debonair.csproj", "{B8C24577-FAE7-4C04-AB54-8C94262C2FE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debonair.Tests", "Debonair.Tests\Debonair.Tests.csproj", "{6B6801CB-9B0A-4CB0-ACB1-1BA2D1047EBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Debonair.Tests", "Debonair.Tests\Debonair.Tests.csproj", "{6B6801CB-9B0A-4CB0-ACB1-1BA2D1047EBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,7 +20,6 @@ Global
 		{6B6801CB-9B0A-4CB0-ACB1-1BA2D1047EBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6B6801CB-9B0A-4CB0-ACB1-1BA2D1047EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B6801CB-9B0A-4CB0-ACB1-1BA2D1047EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B6801CB-9B0A-4CB0-ACB1-1BA2D1047EBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

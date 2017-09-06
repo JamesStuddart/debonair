@@ -1,7 +1,7 @@
 # debonair
 Micro Orm - Its just got simpler
 
-![version](https://img.shields.io/badge/version-v2.0.0.0-4FC921.svg) ![released](https://img.shields.io/badge/released-2017/09/06-D6AE22.svg) ![branch](https://img.shields.io/badge/branch-Master-A1A1A1.svg) ![branch](https://img.shields.io/badge/.Net-Standard_2.0-4FC921.svg)
+![version](https://img.shields.io/badge/version-v2.0.0.1-4FC921.svg) ![released](https://img.shields.io/badge/released-2017/09/06-D6AE22.svg) ![branch](https://img.shields.io/badge/branch-Master-A1A1A1.svg) ![branch](https://img.shields.io/badge/.Net-Standard_2.0-4FC921.svg)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/JamesStuddart/debonair/master/License)
 
 ![Debonair](/debonair-round.png?raw=true "Debonair Micro Orm")
@@ -10,6 +10,19 @@ Debonair is a very light weight ORM, that does not contain object tracking, it d
 
 
 ## Updates
+
+---
+### Update v2.0.0.1
+---
+#### Changes:
+- Removed Reliance on SqlClient and SqlParameter, not uses IDbConnection and IDbParameters so should work for other database not just Microsoft Sql
+
+#### Bugs Fixed:
+- Fixed issue where primary key was not returned in select
+- Fixed inability to update due to passing in an empty primary value
+- Fixed issue where Ignored properties were still in the sql statement
+
+
 ---
 ### Update v2.0.0.0
 ---

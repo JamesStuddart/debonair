@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using Debonair.Data.Orm;
@@ -17,10 +17,10 @@ namespace Debonair.Data
         private readonly ICrudGenerator<TEntity> sqlGenerator;
         private readonly IContext dataContext;
 
-        public DataRepository(SqlConnection sqlConnection, ICrudGenerator<TEntity> generator = null, IContext context = null)
+        public DataRepository(IDbConnection dbConnection, ICrudGenerator<TEntity> generator = null, IContext context = null)
         {
             sqlGenerator = generator ?? new SqlCrudGenerator<TEntity>();
-            dataContext = context ?? new SqlContext(sqlConnection);
+            dataContext = context ?? new SqlContext(dbConnection);
         }
         ~DataRepository()
         {
@@ -47,14 +47,14 @@ namespace Debonair.Data
 
         public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true)
         {
-            var sql = sqlGenerator.Select(predicate, dirtyRead);
-            return dataContext.Query<TEntity>(sql, sqlGenerator.SelectParameters.ToSqlParameters());
+            var sql = sqlGenerator.Select(predicate, dirtyRead); 
+            return dataContext.Query<TEntity>(sql, sqlGenerator.SelectParameters.ToDbDataParameters(dataContext.dbConnection));
         }
 
         public bool Insert(TEntity entity)
         {
             var sql = sqlGenerator.Insert();
-            var newId = dataContext.ExecuteScalar<TEntity>(sql, entity.ToSqlParameters<TEntity>());
+            var newId = dataContext.ExecuteScalar<TEntity>(sql, entity.ToDbDataParameters<TEntity>(dataContext.dbConnection));
 
             var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
 
@@ -68,7 +68,7 @@ namespace Debonair.Data
         public bool Update(TEntity entity)
         {
             var sql = sqlGenerator.Update();
-            dataContext.ExecuteNonQuery(sql, entity.ToSqlParameters<TEntity>());
+            dataContext.ExecuteNonQuery(sql, entity.ToDbDataParameters<TEntity>(dataContext.dbConnection));
 
             return true;
         }
@@ -83,7 +83,7 @@ namespace Debonair.Data
 
         public IEnumerable<TEntity> ExecuteStoredProcedure(string spName, object parameters)
         {
-            return dataContext.ExecuteStoredProcedure<TEntity>(spName, parameters.ToSqlParameters<TEntity>());
+            return dataContext.ExecuteStoredProcedure<TEntity>(spName, parameters.ToDbDataParameters<TEntity>(dataContext.dbConnection));
         }
 
         public IEnumerable<TEntity> ExecuteStoredProcedure(string spName)
@@ -93,7 +93,7 @@ namespace Debonair.Data
 
         public void ExecuteNonQueryStoredProcedure(string spName, object parameters)
         {
-            dataContext.ExecuteStoredProcedure(spName, parameters.ToSqlParameters<TEntity>());
+            dataContext.ExecuteStoredProcedure(spName, parameters.ToDbDataParameters<TEntity>(dataContext.dbConnection));
         }
 
         public void ExecuteNonQueryStoredProcedure(string spName)

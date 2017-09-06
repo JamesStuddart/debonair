@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace Debonair.Utilities
@@ -40,22 +41,57 @@ namespace Debonair.Utilities
             return destination;
         }
 
-        public static List<SqlParameter> ToSqlParameters<TEntity>(this object source) where TEntity : class, new()
+        public static List<IDbDataParameter> ToDbDataParameters<TEntity>(this object source, IDbConnection connection) where TEntity : class, new()
         {
-            var list = new List<SqlParameter>();
+            var list = new List<IDbDataParameter>();
             
             foreach (var prop in source.GetType().GetProperties())
             {
                 if (MappingCache.GetPropertyMapping<TEntity>(prop).IsIgnored) continue;
 
-                list.Add(new SqlParameter(prop.Name, prop.GetValue(source, null)));
+                list.Add(CreateParameter(connection, prop.Name, prop.GetValue(source, null)));
             }
 
             return list;
         }
-        public static List<SqlParameter> ToSqlParameters(this Dictionary<string,object> source)
+
+        public static List<IDbDataParameter> ToDbDataParameters(this Dictionary<string, object> source, IDbConnection connection)
         {
-            return source?.Select(item => new SqlParameter(item.Key, item.Value)).ToList() ?? new List<SqlParameter>();
+            return source?.Select(item => CreateParameter(connection, item.Key, item.Value)).ToList() ?? new List<IDbDataParameter>();
+        }
+        
+        private static IDbDataParameter CreateParameter(IDbConnection connection, string name, object value)
+        {
+            var paramater = connection.CreateCommand().CreateParameter();
+
+            paramater.ParameterName = name;
+            paramater.Value = value;
+            paramater.DbType = GetDbType(value.GetType());
+            return paramater;
+        }
+
+        private static DbType GetDbType(Type type)
+        {
+           var strTypeName = type.Name;
+            var dbType = DbType.String;
+
+                if (ReferenceEquals(type, typeof(DBNull)))
+                {
+                    return dbType;
+                }
+
+                if (ReferenceEquals(type, typeof(byte[])))
+                {
+                    return DbType.Binary;
+                }
+
+                dbType = (DbType)Enum.Parse(typeof(System.Data.DbType), strTypeName, true);
+
+                if (dbType == System.Data.DbType.UInt64)
+                    dbType = System.Data.DbType.Int64;
+           
+
+            return dbType;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Debonair.FluentApi
 
         public IPropertyMapping PrimaryKey { get { return PropertyMappings.FirstOrDefault(x => x.IsPrimaryKey); } }
         public IPropertyMapping IsDeletedProperty { get { return PropertyMappings.FirstOrDefault(x => x.IsDeletedProperty); } }
-        public IEnumerable<IPropertyMapping> Properties { get { return PropertyMappings.Where(x => x != PrimaryKey && !x.IsIgnored); } }
+        public IEnumerable<IPropertyMapping> Properties { get { return PropertyMappings.Where(x => !x.IsIgnored); } }
 
         public string SchemaName { get; private set; }
         public string TableName { get; private set; }
