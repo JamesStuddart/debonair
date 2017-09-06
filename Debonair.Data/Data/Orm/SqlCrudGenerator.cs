@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Debonair.Data.Orm.QueryBuilder;
-using Debonair.Entities;
 using Debonair.FluentApi;
 
 namespace Debonair.Data.Orm
@@ -31,9 +30,9 @@ namespace Debonair.Data.Orm
             {
                 throw new NotSupportedException("To insert multiple lines of data it is faster and more effcient to use SQLBulkCopy ");
             }
+            
 
-
-            var columNames = string.Join(", ", EntityMapping.Properties.Select(p => $"[{EntityMapping.TableName}].[{p.ColumnName}]"));
+            var columNames = string.Join(", ", EntityMapping.Properties.Select(p => !string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]"));
             var values = string.Join(", ", EntityMapping.Properties.Select(p => $"@{p.PropertyInfo.Name}"));
 
             var strBuilder = new StringBuilder();
@@ -55,12 +54,13 @@ namespace Debonair.Data.Orm
 
         public virtual string Update()
         {
+            
 
             var strBuilder = new StringBuilder();
             strBuilder.AppendFormat("UPDATE [{0}].[{1}] SET {2} WHERE {3}",
                                          EntityMapping.SchemaName,
                                          EntityMapping.TableName,
-                                         string.Join(", ", EntityMapping.Properties.Select(p => $"[{EntityMapping.TableName}].[{p.ColumnName}] = @{p.PropertyInfo.Name}")),
+                                         string.Join(", ", EntityMapping.Properties.Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]") + $" = @{p.PropertyInfo.Name}")),
                                          $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
 
             return strBuilder.ToString();
@@ -70,11 +70,11 @@ namespace Debonair.Data.Orm
 
         public virtual string Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true)
         {
-            Func<IPropertyMapping, string> projectionFunction = p => !string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}] AS [{p.PropertyInfo.Name}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]";
+            string ProjectionFunction(IPropertyMapping p) => !string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}] AS [{p.PropertyInfo.Name}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]";
 
             var strBuilder = new StringBuilder();
             strBuilder.AppendFormat("SELECT {0} FROM [{1}].[{2}] " + (dirtyRead ? "WITH (NOLOCK)" : string.Empty),
-                                    string.Join(", ", EntityMapping.Properties.Select(projectionFunction)),
+                                    string.Join(", ", EntityMapping.Properties.Select(ProjectionFunction)),
                                     EntityMapping.SchemaName,
                                     EntityMapping.TableName);
 

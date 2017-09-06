@@ -1,7 +1,8 @@
 # debonair
 Micro Orm - Its just got simpler
 
-![version](https://img.shields.io/badge/version-v1.1.0.0-4FC921.svg) ![released](https://img.shields.io/badge/released-2016/11/10-D6AE22.svg) ![branch](https://img.shields.io/badge/branch-FluentApi-A1A1A1.svg) ![branch](https://img.shields.io/badge/.Net-4.6.1-4FC921.svg)
+![version](https://img.shields.io/badge/version-v2.0.0.0-4FC921.svg) ![released](https://img.shields.io/badge/released-2017/09/06-D6AE22.svg) ![branch](https://img.shields.io/badge/branch-Master-A1A1A1.svg) ![branch](https://img.shields.io/badge/.Net-Standard_2.0-4FC921.svg)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/JamesStuddart/debonair/master/License)
 
 ![Debonair](/debonair-round.png?raw=true "Debonair Micro Orm")
 
@@ -9,6 +10,28 @@ Debonair is a very light weight ORM, that does not contain object tracking, it d
 
 
 ## Updates
+---
+### Update v2.0.0.0
+---
+We have ported Debonair over to **.netStandard 2.0**, this has meant a few changes to the architecture.
+
+#### Changes:
+- Debonair project moved to **.Net Standard 2.0**
+- Debonair.Tests project moved to **.Net Core 2.0**
+- Unit test project moved to XUnit (N.B. The XUnit project is a **.netCore** project)
+- Caching rewritten and now uses *Microsoft.Extensions.Caching.Memory*
+
+#### Bugs Fixed:
+- Insert/Update Column names not being populated when you provide an EntityMapping.
+- Improved performance, although the mapping to your POCOs still needs some work.
+- Errors fixed in README.md
+
+#### Outstanding Issues/Problems:
+- Mapping to POCOs is slow, when a lot of data is present, see [Performance Stats](#performance-stats-for-selecting) for more information
+- Reliance on *SqlConnection* from *System.Data.SqlClient*
+- Lacking quality Unit tests
+
+---
 ### Update v1.1.0.0
 ---
 We have removed the requirement of the base class *DebonairStandard* this was seen by many as breaking separation of concern and merging some of the Data and Business responsibilities, and thus coupling the entities to this ORM. 
@@ -17,7 +40,7 @@ We have also removed the attribute decorations for mapping the entities requirem
 
 So, we couldn't just take away a load of features and not give you a way to achieve this, so we present to you in full technicolor! Debonair with its own **fluent mapping API**!  
 
-***Please note: there are no useful unit tests for this library at this time, but we are working on fixing that, sorry to the TDD purests out there.***
+***Please note: there are no useful unit tests for this library at this time, but we are working on fixing that, sorry to the TDD purists out there.***
 
 ---
 
@@ -34,12 +57,12 @@ Simply build the solution and add the DLL to your projects
 
 **OR**
 
-Debonair is alaso available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
+Debonair is also available via Nuget, [NuGet library](https://www.nuget.org/packages/Debonair/) so you can add it to your project via the Nuget Package Manager.
 
 ## Usage
 Debonair uses standard connection strings, but currently only supports Microsoft SQL Server, it also manages the connection state, you do not need to open and close the connections yourself.
 
-You can declare the repositories when you need, as shown in the crude examples, or you can implement a better more robust soltuion. I suggest you build a more robust solution.
+You can declare the repositories when you need, as shown in the crude examples, or you can implement a better more robust solution. I suggest you build a more robust solution.
 
 *Example usage:*
 ```CSharp
@@ -86,10 +109,10 @@ Note: Your entities no longer need to inherit from the Debonair base class **Deb
 ```csharp
 public class Customer
 {
-	public int Id { get; set; }
-    public string CustomerName { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
+   public int Id { get; set; }
+   public string CustomerName { get; set; }
+   public DateTime DateOfBirth { get; set; }
+   public string EmailAddress { get; set; }
 }   
        
 var repo = new DataRepository<Customer>(new SqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString));
@@ -99,16 +122,16 @@ var foundCustomers = repo.Select();
 
 #### Select with criteria
 
-We harness the power of linq to produce the *WHERE* clauses, this means its sleak and familiar to you.
+We harness the power of linq to produce the *WHERE* clauses, this means its sleek and familiar to you.
 
 
 ```csharp
 public class Customer
 {
-    public int Id { get; set; }
-    public string CustomerName { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
+   public int Id { get; set; }
+   public string CustomerName { get; set; }
+   public DateTime DateOfBirth { get; set; }
+   public string EmailAddress { get; set; }
 }   
        
 var repo = new DataRepository<Customer>(new SqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString));
@@ -120,7 +143,7 @@ var customer2000 = repo.Select(x => x.Id == 2000).FirstOrDefault();
 var smithCustomers = repo.Select(x => x.CustomerName.Contains("Smith"));
 
 //Will select non-Gmail Customers
-var noGamilers = repo.Select(x => !x.EmailAddress.EndsWith("@gmail.com"));
+var noGmailers = repo.Select(x => !x.EmailAddress.EndsWith("@gmail.com"));
 ```
 
 ### Insert an object
@@ -188,18 +211,18 @@ repo.ExecuteStoredProcedure("dbo.spDeleteCustomersThatAreTooOld", new {MaxAge = 
 
 ### Fluent Mapping API
 
-NEW to v1.1.0.0 is the Fluent Mapping API, this is designed to help you quickly and easily define the requirements of the properties within youe entities, without tightly coupling your entities to this ORM.
+NEW to v1.1.0.0 is the Fluent Mapping API, this is designed to help you quickly and easily define the requirements of the properties within your entities, without tightly coupling your entities to this ORM.
 
-To setup a maping for the *Customer* entity that we saw earlier all we need to do is create a class that will contain our mapping information. This class can be placed anywhere in your system, and by default Debonair will find them and use them. Below is the blank mapping class, and as we continue we will fill it in.
+To setup a mapping for the *Customer* entity that we saw earlier all we need to do is create a class that will contain our mapping information. This class can be placed anywhere in your system, and by default Debonair will find them and use them. Below is the blank mapping class, and as we continue we will fill it in.
 
 *Example Usage:*
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
+   public CustomerMapping()
+   {  
 
-  }
+   }
 }
 ```
 
@@ -212,10 +235,10 @@ You have an Entity called **Customer**, but it is correctly stored in the Databa
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers");
-  }
+   public CustomerMapping()
+   {
+      SetTableName("Customers");
+   }
 }
 ```
 
@@ -226,11 +249,11 @@ The properties of your entities, like tables, should accurately reflect the colu
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers");
-    SetColumnName(x => x.DateOfBirth, "DoB");
-  }
+   public CustomerMapping()
+   {
+      SetTableName("Customers");
+      SetColumnName(x => x.DateOfBirth, "DoB");
+   }
 }  
 ```
 
@@ -242,12 +265,12 @@ This is used when generating the SQL that will be executed by your queries.
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers");
-    SetSchemaName("Sales");
-    SetColumnName(x => x.DateOfBirth, "DoB");
-  }
+   public CustomerMapping()
+   {
+      SetTableName("Customers");
+      SetSchemaName("Sales");
+      SetColumnName(x => x.DateOfBirth, "DoB");
+   }
 }  
 ```
 The mapping system also offers chaining of mappings, if you wish to use it, as seen below: 
@@ -256,11 +279,11 @@ The mapping system also offers chaining of mappings, if you wish to use it, as s
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers").SetTableName("Sales");
-    SetColumnName(x => x.DateOfBirth, "DoB");
-  }
+   public CustomerMapping()
+   {
+   	  SetTableName("Customers").SetTableName("Sales");
+      SetColumnName(x => x.DateOfBirth, "DoB");
+   }
 }  
 ```
 
@@ -275,12 +298,12 @@ When inserting a new record, the primary key property will be updated with the n
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers").SetTableName("Sales");
-    SetColumnName(x => x.DateOfBirth, "DoB");
-    SetPrimaryKey(x => x.Id);
-  }
+   public CustomerMapping()
+   {
+      SetTableName("Customers").SetTableName("Sales");
+      SetColumnName(x => x.DateOfBirth, "DoB");
+      SetPrimaryKey(x => x.Id);
+   }
 }  
 ```
 
@@ -294,13 +317,13 @@ You can achieve this with the mapping option **IsDeleted**
 ```csharp
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers").SetTableName("Sales");
-    SetColumnName(x => x.DateOfBirth, "DoB");
-    SetPrimaryKey(x => x.Id);
-    SetIsDeletedProperty(x => x.IsDeleted);
-  }
+   public CustomerMapping()
+   {   	
+      SetTableName("Customers").SetTableName("Sales");
+      SetColumnName(x => x.DateOfBirth, "DoB");
+      SetPrimaryKey(x => x.Id);
+      SetIsDeletedProperty(x => x.IsDeleted);
+   }
 }  
 ```
 
@@ -326,61 +349,53 @@ You will at times have properties that have nothing to do with the database stru
 ```csharp
 public class Customer
 {
-	public int Id { get; set; }
-    public string CustomerName { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public string EmailAddress { get; set; }
-    public int Age {get { Return (int)(DateTime.Now - DateOfBirth)}};
+   public int Id { get; set; }
+   public string CustomerName { get; set; }
+   public DateTime DateOfBirth { get; set; }
+   public string EmailAddress { get; set; }
+   public int Age {get { Return (int)(DateTime.Now - DateOfBirth)}};
 }  
 
 public class CustomerMapping : EntityMapping<Customer>
 {
-  public CustomerMapping()
-  {
-	SetTableName("Customers").SetTableName("Sales");
-    SetColumnName(x => x.DateOfBirth, "DoB");
-    SetPrimaryKey(x => x.Id);
-    SetIsDeletedProperty(x => x.IsDeleted);
-    SetIgnore(x => x.Age);
-  }
+   public CustomerMapping()
+   {      	
+      SetTableName("Customers").SetTableName("Sales");
+      SetColumnName(x => x.DateOfBirth, "DoB");
+      SetPrimaryKey(x => x.Id);
+      SetIsDeletedProperty(x => x.IsDeleted);
+      SetIgnore(x => x.Age);
+   }
 }  
   
 ```
 
 
-## Some crude performance stats for selecting
+## Performance stats for selecting
 
 I have not run a lot of performance tests, this project was the child of a disagreement and was mainly to prove that basic retrieval of data using *Linq2SQL* can be slow.
 
-Both *Linq2Sql* and *Debonair* are also mapping the results to the entities within the project, where as Sql Server Management Studio is just the raw selection of data.
+The results below come from running the Orm-Comparison project by Fran Hoey, you can find here [HERE](https://github.com/franhoey/Orm-Comparison)
 
-<table>
-    <tr>
-        <th>Solution</th>
-        <th>Record Count</th>
-        <th>Quickest Duration (seconds)</th>
-        <th>Longest Duration (seconds)</th>
-    </tr>
-    <tr>
-        <td>SSMS</td>
-        <td>1,800,265</td>
-        <td>47</td>
-        <td>50</td>
-    </tr>
-    <tr>
-        <td>Debonair</td>
-        <td>1,800,265</td>
-        <td>48.56</td>
-        <td>52.56</td>
-    </tr>
-    <tr>
-        <td>Linq2Sql</td>
-        <td>1,800,265</td>
-        <td>63.23</td>
-        <td>80.41</td>
-    </tr>
-</table>
+*Note: Stats in Orm Comparison repository as based on an older version of Debonair*
 
+**How Orm-Comparison work**
 
-*These times are not conclusive, but they are the extremes of several runs of the code.*
+Using each ORM each Stored Procedure is timed while being executed 5000 times. Before the timed run each Store Procedure is executed 500 times to allow the ORM and Database to warm up.
 
+**The Results**
+> *These stats will vary depending on your machine, I know Fran had faster speeds on his runs*
+
+|Orm                      	|SelectOne       	|SelectAll       	|RunNonQuery     |
+|---------------------------|-------------------|-------------------|----------------|
+|LinqToSql                	|00:00:02.5329189	|00:00:06.4598690	|00:00:01.7674956|
+|EntityFramework          	|00:00:01.5493002	|00:00:05.7021158	|00:00:02.3565100|
+|RawDataAccess            	|00:00:00.6248822	|00:00:03.8076024	|00:00:00.5771884|
+|Dapper                   	|00:00:00.6452659	|00:00:03.1739489	|00:00:00.6425601|
+|PetaPoco                 	|00:00:00.8815409	|00:00:03.6603908	|00:00:00.8907718|
+|NPoco                    	|00:00:01.9791860	|00:00:04.8401289	|00:00:00.9578563|
+|MicroLite                	|00:00:00.6442267	|00:00:03.7207547	|00:00:00.6357562|
+|Debonair                 	|00:00:00.7615803	|00:00:14.8886053	|00:00:00.6443041|
+|ServiceStack.OrmLite     	|00:00:00.6697889	|00:00:03.2370396	|00:00:00.5983928|
+
+As you can see Debonair is performing well, until the SelectAll, this is an issue with mapping and need fixing.

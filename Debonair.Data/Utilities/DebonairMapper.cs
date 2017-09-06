@@ -6,9 +6,6 @@ namespace Debonair.Utilities
 {
     public static class DebonairMapper
     {
-
-        private static readonly MappingCache MappingCache = new MappingCache();
-
         /// <typeparam name="TEntity">Objet you want to map TO</typeparam>
         /// <param name="source">Objet you want to map FROM</param>
         /// <param name="strict">Ensure property types match as well as names</param>
@@ -49,7 +46,7 @@ namespace Debonair.Utilities
             
             foreach (var prop in source.GetType().GetProperties())
             {
-                if (MappingCache.GetMapping<TEntity>(prop).IsIgnored) continue;
+                if (MappingCache.GetPropertyMapping<TEntity>(prop).IsIgnored) continue;
 
                 list.Add(new SqlParameter(prop.Name, prop.GetValue(source, null)));
             }

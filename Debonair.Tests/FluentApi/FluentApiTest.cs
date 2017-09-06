@@ -1,20 +1,19 @@
 ﻿using System.Linq;
-using Debonair.Data.Orm;
-using Debonair.Tests.MockObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
+
 
 namespace Debonair.Tests.FluentApi
 {
-    [TestClass]
+
     public class FluentApiTest
     {
-        [TestMethod]
-        public void TestMethod1()
+        [Fact]
+        public void MappingTest()
         {
             var mapping = new TestObjectMapping();
 
-            Assert.IsTrue(mapping.PropertyMappings.Any());
-            Assert.IsTrue(mapping.PropertyMappings.Count == 1);
+            Assert.True(mapping.PropertyMappings.Any());
+            Assert.True(mapping.PropertyMappings.Count == 6);
         }
     }
 }

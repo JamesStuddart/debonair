@@ -21,7 +21,6 @@ namespace Debonair.Data.Orm.QueryBuilder
             EntityMapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
         }
 
-
         public string GenerateWhere(Expression<Func<TEntity, bool>> expression)
         {
             var result = ResolveQuery((dynamic)expression.Body);

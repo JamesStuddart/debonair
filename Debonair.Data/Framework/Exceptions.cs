@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Management.Instrumentation;
 
 namespace Debonair.Framework
 {
@@ -8,11 +7,11 @@ namespace Debonair.Framework
     {
     }
 
-    public class DependancyNotFoundException : InstanceNotFoundException
+    public class DependancyNotFoundException : Exception
     {
         public DependancyNotFoundException(string message) : base(message) { }
     }
-    public class MappingNotFoundException : InstanceNotFoundException
+    public class MappingNotFoundException : Exception
     {
         public MappingNotFoundException(string message) : base(message) { }
     }

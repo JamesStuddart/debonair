@@ -1,65 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Debonair.FluentApi;
 
 namespace Debonair.Utilities
 {
-    public class EntityCache
+    public static class EntityCache
     {
-        private readonly CacheProvider cache;
+        private static readonly CacheProvider PropertyInfoCache = new CacheProvider();
 
-        public EntityCache()
-        {
-            cache = new CacheProvider();
-        }
-
-        public IEnumerable<PropertyInfo> GetPropertyInfo(object obj)
+        public static IEnumerable<PropertyInfo> GetPropertyInfo(object obj)
         {
             var type = obj.GetType();
             var key = type.FullName;
 
-            if (cache.IsSet(key))
+            if (!PropertyInfoCache.TryGet(key, out IEnumerable<PropertyInfo> value))
             {
-                return cache.Get<IEnumerable<PropertyInfo>>(key);
+                value = type.GetProperties();
+                PropertyInfoCache.Set(key, value);
             }
-            else
-            {
-                var props = type.GetProperties();
-                cache.Set(key, props);
 
-                return props;
-            }
-        }
-    }
-    public class MappingCache
-    {
-        private readonly CacheProvider cache;
-
-        public MappingCache()
-        {
-            cache = new CacheProvider();
+            return value;
         }
 
-        public IPropertyMapping GetMapping<TEntity>(PropertyInfo prop) where TEntity : class, new()
-        {
-            var type = prop.GetType();
-            var key = type.FullName;
-            
-            if (cache.IsSet(key))
-            {
-                return cache.Get<IPropertyMapping>(key);
-            }
-            else
-            {
-                var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
-                mapping.GetMappingForType(prop);
-
-                var propMapping = mapping.GetMappingForType(prop);
-
-                cache.Set(key, propMapping);
-
-                return propMapping;
-            }
-        }
     }
 }

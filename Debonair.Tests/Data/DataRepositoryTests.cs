@@ -1,27 +1,19 @@
-﻿using System;
-using System.Configuration;
-using System.Data.SqlClient;
-using Debonair.Data;
-using Debonair.Tests.MockObjects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Xunit;
 
 namespace Debonair.Tests.Data
 {
-    [TestClass]
+
     public class DataRepositoryTests
     {
-        readonly IDataRepository<DeleteableTestObject> repo = new DataRepository<DeleteableTestObject>(new SqlConnection(ConfigurationManager.ConnectionStrings[0].ConnectionString));
 
-        [TestMethod]
+        [Fact]
         public void SelectTest()
         {
-            var results = repo.Select(x => x.CreatedDate == DateTime.UtcNow);
         }
 
-        [TestMethod]
+        [Fact]
         public void StoredProcedureTest()
         {
-            var results = repo.ExecuteStoredProcedure("dbo.spName", new { Id = 1, CustomerName = "Joe Bloggs" });
         }
     }
 }

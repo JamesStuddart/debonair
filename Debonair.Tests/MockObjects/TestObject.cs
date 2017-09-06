@@ -1,6 +1,4 @@
 ﻿using System;
-using Debonair.Data.Orm;
-using Debonair.Entities;
 
 namespace Debonair.Tests.MockObjects
 {
@@ -24,9 +22,9 @@ namespace Debonair.Tests.MockObjects
 
     public enum TestStatus
     {
-        empty = 0,
-        good = 100,
-        dead = 200
+        Empty = 0,
+        Good = 100,
+        Dead = 200
     }
 
 }
