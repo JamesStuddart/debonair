@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using Debonair.Utilities.Extensions;
 
-
 namespace Debonair.Data.Context
 {
     public class SqlContext : IContext

@@ -3,32 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Debonair.Data.Context;
 using Debonair.Data.Orm.QueryBuilder.ExpressionTree;
 using Debonair.Entities;
 using Debonair.FluentApi;
 
 namespace Debonair.Data.Orm.QueryBuilder
 {
-    internal class LambdaToSql<TEntity> where TEntity : class, new()
+    public class LambdaToSql<TEntity> where TEntity : class, new()
     {
         private IEntityMapping<TEntity> EntityMapping { get; }
+        private readonly ISqlBuilder _sqlBuilder;
 
-        //public bool ContainsIsDeleteable { get; private set; }
         public Dictionary<string, object> SelectParameters = new Dictionary<string, object>();
 
-        public LambdaToSql()
+        public LambdaToSql(IEntityMapping<TEntity> entityMapping, ISqlBuilder sqlBuilder)
         {
-            EntityMapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+            EntityMapping = entityMapping;
+            _sqlBuilder = sqlBuilder;
         }
 
         public string GenerateWhere(Expression<Func<TEntity, bool>> expression)
         {
             var result = ResolveQuery((dynamic)expression.Body);
-            var sql = new SqlBuilder().GenerateSql(result, out SelectParameters);
+            var sql = _sqlBuilder.GenerateSql(result, out SelectParameters);
 
             return sql;
         }
-
 
         #region resolver
 
@@ -176,11 +177,6 @@ namespace Debonair.Data.Orm.QueryBuilder
         {
             return field.GetValue(obj);
         }
-
-
-
-
-
 
         #endregion
         #endregion resolver

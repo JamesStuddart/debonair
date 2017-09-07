@@ -2,7 +2,7 @@
 
 namespace Debonair.Data.Orm.QueryBuilder.ExpressionTree
 {
-    class LikeNode : Node
+    public class LikeNode : Node
     {
         public LikeMethod Method { get; set; }
         public MemberNode MemberNode { get; set; }

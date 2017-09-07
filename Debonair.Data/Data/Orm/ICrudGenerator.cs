@@ -16,7 +16,7 @@ namespace Debonair.Data.Orm
 
         #region Functions
 
-        string Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true);
+        string Select(Expression<Func<TEntity, bool>> predicate = null);
 
         string Insert();
 

@@ -14,15 +14,10 @@ namespace Debonair.FluentApi
         public IPropertyMapping IsDeletedProperty { get { return PropertyMappings.FirstOrDefault(x => x.IsDeletedProperty); } }
         public IEnumerable<IPropertyMapping> Properties { get { return PropertyMappings.Where(x => !x.IsIgnored); } }
 
-        public string SchemaName { get; private set; }
-        public string TableName { get; private set; }
+        public string SchemaName { get; private set; } = "dbo";
+        public string TableName { get; private set; } = typeof(TEntity).Name;
 
-        protected internal EntityMapping(IList<IPropertyMapping> propertyMappers = null)
-        {
-            PropertyMappings = propertyMappers ?? DefineMappings();
-            SchemaName = "dbo";
-            TableName = typeof(TEntity).Name;
-        }
+        public EntityMapping() => PropertyMappings = DefineMappings();
 
         public IPropertyMapping GetMappingForType(PropertyInfo info)
         {
@@ -127,7 +122,7 @@ namespace Debonair.FluentApi
             return mapping;
         }
 
-        private IList<IPropertyMapping> DefineMappings()
+        private static IList<IPropertyMapping> DefineMappings()
         {
             var mappings = new List<IPropertyMapping>();
 

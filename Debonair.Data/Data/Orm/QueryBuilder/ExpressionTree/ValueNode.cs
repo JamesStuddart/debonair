@@ -1,6 +1,6 @@
 ﻿namespace Debonair.Data.Orm.QueryBuilder.ExpressionTree
 {
-    class ValueNode : Node
+    public class ValueNode : Node
     {
         public object Value { get; set; }
     }

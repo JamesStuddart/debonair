@@ -4,25 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Debonair.Data.Orm;
 using Debonair.Data.Orm.QueryBuilder;
 using Debonair.FluentApi;
+using Debonair.Provider.MsSql.Data.Context;
 
-namespace Debonair.Data.Orm
+namespace Debonair.Provider.MsSql.Data.Orm
 {
-    public class SqlCrudGenerator<TEntity> : ICrudGenerator<TEntity> where TEntity : class, new()
+    public class MsSqlCrudGenerator<TEntity> : ICrudGenerator<TEntity> where TEntity : class, new()
     {
-
+        private readonly bool _dirtyRead;
         public Dictionary<string, object> SelectParameters { get; set; }
         public IEntityMapping<TEntity> EntityMapping { get; }
         
-      
-        public SqlCrudGenerator()
+        public MsSqlCrudGenerator(bool dirtyRead = true)
         {
+            _dirtyRead = dirtyRead;
             EntityMapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
         }
 
         #region Query generators
-
+        
         public virtual string Insert()
         {
 
@@ -66,19 +68,17 @@ namespace Debonair.Data.Orm
             return strBuilder.ToString();
         }
 
-     
-
-        public virtual string Select(Expression<Func<TEntity, bool>> predicate = null, bool dirtyRead = true)
+        public virtual string Select(Expression<Func<TEntity, bool>> predicate = null)
         {
             string ProjectionFunction(IPropertyMapping p) => !string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}] AS [{p.PropertyInfo.Name}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]";
 
             var strBuilder = new StringBuilder();
-            strBuilder.AppendFormat("SELECT {0} FROM [{1}].[{2}] " + (dirtyRead ? "WITH (NOLOCK)" : string.Empty),
+            strBuilder.AppendFormat("SELECT {0} FROM [{1}].[{2}] " + (_dirtyRead ? "WITH (NOLOCK)" : string.Empty),
                                     string.Join(", ", EntityMapping.Properties.Select(ProjectionFunction)),
                                     EntityMapping.SchemaName,
                                     EntityMapping.TableName);
 
-            var sqlGenerator = new LambdaToSql<TEntity>();
+            var sqlGenerator = new LambdaToSql<TEntity>(EntityMapping, new MsSqlBuilder() );
 
             if (predicate != null)
             {
@@ -98,8 +98,6 @@ namespace Debonair.Data.Orm
             return strBuilder.ToString();
         }
 
-
-
         public virtual string Delete(bool forceDelete = false)
         {
             var strBuilder = new StringBuilder();
@@ -110,7 +108,6 @@ namespace Debonair.Data.Orm
                     EntityMapping.SchemaName,
                     EntityMapping.TableName,
                     string.Join(" AND ", $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
-
             }
             else
             {

@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using Xunit;
 
-
 namespace Debonair.Tests.FluentApi
 {
-
     public class FluentApiTest
     {
         [Fact]

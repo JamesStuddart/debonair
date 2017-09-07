@@ -1,6 +1,6 @@
 ﻿namespace Debonair.Data.Orm.QueryBuilder.ExpressionTree
 {
-    abstract class Node
+    public abstract class Node
     {
     }
 }
