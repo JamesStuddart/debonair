@@ -33,11 +33,11 @@ namespace Debonair.Provider.Sqlite.Data.Orm
             }
             
 
-            var columNames = string.Join(", ", EntityMapping.Properties.Where(x => !x.IsIgnored).Select(p => !string.IsNullOrEmpty(p.ColumnName) ? $"{EntityMapping.TableName}.{p.ColumnName}" : $"{EntityMapping.TableName}.{p.PropertyInfo.Name}"));
+            var columNames = string.Join(", ", EntityMapping.Properties.Where(x => !x.IsIgnored).Select(p => !string.IsNullOrEmpty(p.ColumnName) ? $"\"{EntityMapping.TableName}\".\"{p.ColumnName}\"" : $"\"{EntityMapping.TableName}\".\"{p.PropertyInfo.Name}\""));
             var values = string.Join(", ", EntityMapping.Properties.Where(x => !x.IsIgnored).Select(p => $"@{p.PropertyInfo.Name}"));
 
             var strBuilder = new StringBuilder();
-            strBuilder.AppendFormat("INSERT INTO {0} {1} {2} ",
+            strBuilder.AppendFormat("INSERT INTO \"{0}\" {1} {2} ",
                                     EntityMapping.TableName,
                                     string.IsNullOrEmpty(columNames) ? string.Empty : $"({columNames})",
                                     string.IsNullOrEmpty(values) ? string.Empty : $" VALUES ({values})");
@@ -55,20 +55,20 @@ namespace Debonair.Provider.Sqlite.Data.Orm
             
 
             var strBuilder = new StringBuilder();
-            strBuilder.AppendFormat("UPDATE {0} SET {1} WHERE {2}",
+            strBuilder.AppendFormat("UPDATE \"{0}\" SET {1} WHERE {2}",
                                          EntityMapping.TableName,
-                                         string.Join(", ", EntityMapping.Properties.Where(x=>!x.IsIgnored && !x.IsPrimaryKey).Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]") + $" = @{p.PropertyInfo.Name}")),
-                                         $"{EntityMapping.TableName}.{EntityMapping.PrimaryKey.ColumnName} = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
+                                         string.Join(", ", EntityMapping.Properties.Where(x=>!x.IsIgnored && !x.IsPrimaryKey).Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"\"{EntityMapping.TableName}\".\"{p.ColumnName}\"" : $"\"{EntityMapping.TableName}\".\"{p.PropertyInfo.Name}\"") + $" = @{p.PropertyInfo.Name}")),
+                                         $"\"{EntityMapping.TableName}\".\"{EntityMapping.PrimaryKey.ColumnName}\" = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
 
             return strBuilder.ToString();
         }
 
         public virtual string Select(Expression<Func<TEntity, bool>> predicate = null)
         {
-            string ProjectionFunction(IPropertyMapping p) => !string.IsNullOrEmpty(p.ColumnName) ? $"{EntityMapping.TableName}.{p.ColumnName} AS {p.PropertyInfo.Name}" : $"{EntityMapping.TableName}.{p.PropertyInfo.Name}";
+            string ProjectionFunction(IPropertyMapping p) => !string.IsNullOrEmpty(p.ColumnName) ? $"\"{EntityMapping.TableName}\".\"{p.ColumnName}\" AS {p.PropertyInfo.Name}" : $"\"{EntityMapping.TableName}\".\"{p.PropertyInfo.Name}\"";
 
             var strBuilder = new StringBuilder();
-            strBuilder.AppendFormat("SELECT {0} FROM {1} ",
+            strBuilder.AppendFormat("SELECT {0} FROM \"{1}\" ",
                                     string.Join(", ", EntityMapping.Properties.Select(ProjectionFunction)),
                                     EntityMapping.TableName);
 
@@ -81,7 +81,7 @@ namespace Debonair.Provider.Sqlite.Data.Orm
 
             if (EntityMapping.IsDeletedProperty != null)
             {
-                strBuilder.AppendFormat(predicate != null ? " AND {0}.{1} != {2}" : " WHERE {0}.{1} != {2}",
+                strBuilder.AppendFormat(predicate != null ? " AND \"{0}\".\"{1}\" != {2}" : " WHERE \"{0}\".\"{1}\" != {2}",
                     EntityMapping.TableName,
                     EntityMapping.IsDeletedProperty.PropertyInfo.Name,
                     0);
@@ -98,16 +98,16 @@ namespace Debonair.Provider.Sqlite.Data.Orm
 
             if (forceDelete || EntityMapping.IsDeletedProperty == null)
             {
-                strBuilder.AppendFormat("DELETE FROM {0} WHERE {1}",
+                strBuilder.AppendFormat("DELETE FROM \"{0}\" WHERE {1}",
                     EntityMapping.TableName,
-                    string.Join(" AND ", $"{EntityMapping.TableName}.{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name} = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
+                    string.Join(" AND ", $"\"{EntityMapping.TableName}\".\"{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name}\" = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
             }
             else
             {
-                strBuilder.AppendFormat("UPDATE {0} SET {1} WHERE {2} ",
+                strBuilder.AppendFormat("UPDATE \"{0}\" SET {1} WHERE {2} ",
                     EntityMapping.TableName,
-                 $"[{EntityMapping.TableName}].[{EntityMapping.IsDeletedProperty.ColumnName}] = 1",
-                                 string.Join(" AND ", $"{EntityMapping.TableName}.{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name} = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
+                 $"\"{EntityMapping.TableName}\".\"{EntityMapping.IsDeletedProperty.ColumnName}\" = 1",
+                                 string.Join(" AND ", $"\"{EntityMapping.TableName}\".\"{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name}\" = @{EntityMapping.PrimaryKey.PropertyInfo.Name}"));
             }
 
             return strBuilder.ToString();
