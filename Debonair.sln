@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Debonair.Provider.Sqlite", "Debonair.Provider.Sqllite\Debonair.Provider.Sqlite.csproj", "{267855BD-4F9C-43CC-AC6F-683E9981BD8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deboniar.Provider.MySql", "Deboniar.Provider.MySql\Deboniar.Provider.MySql.csproj", "{369049CC-4F0A-42C3-89B4-0AE5EE2C769F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Debonair.Provider.MySql", "Deboniar.Provider.MySql\Debonair.Provider.MySql.csproj", "{369049CC-4F0A-42C3-89B4-0AE5EE2C769F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Debonair.Provider.SqlCe", "Debonair.Provider.SqlCe\Debonair.Provider.SqlCe.csproj", "{E0AB0B3E-62F5-4D28-9F06-AD4A053D8DDC}"
 EndProject

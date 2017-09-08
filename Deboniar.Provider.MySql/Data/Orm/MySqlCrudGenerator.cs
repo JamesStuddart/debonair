@@ -14,13 +14,11 @@ namespace Debonair.Provider.MySql.Data.Orm
 {
     public class MySqlCrudGenerator<TEntity> : ICrudGenerator<TEntity> where TEntity : class, new()
     {
-        private readonly bool _dirtyRead;
         public Dictionary<string, object> SelectParameters { get; set; }
         public IEntityMapping<TEntity> EntityMapping { get; }
         
-        public MySqlCrudGenerator(bool dirtyRead = true)
+        public MySqlCrudGenerator()
         {
-            _dirtyRead = dirtyRead;
             EntityMapping = MappingCache.GetMappingForEntity<TEntity>();
         }
 
@@ -72,7 +70,7 @@ namespace Debonair.Provider.MySql.Data.Orm
             string ProjectionFunction(IPropertyMapping p) => !string.IsNullOrEmpty(p.ColumnName) ? $"`{EntityMapping.TableName}`.`{p.ColumnName}` AS `{p.PropertyInfo.Name}`" : $"`{EntityMapping.TableName}`.`{p.PropertyInfo.Name}`";
 
             var strBuilder = new StringBuilder();
-            strBuilder.AppendFormat("SELECT {0} FROM `{1}`.`{2}` " + (_dirtyRead ? "WITH (NOLOCK)" : string.Empty),
+            strBuilder.AppendFormat("SELECT {0} FROM `{1}`.`{2}` ",
                                     string.Join(", ", EntityMapping.Properties.Select(ProjectionFunction)),
                                     EntityMapping.SchemaName,
                                     EntityMapping.TableName);
