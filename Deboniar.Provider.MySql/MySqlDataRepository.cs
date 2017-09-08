@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Debonair.Data;
-using Debonair.FluentApi;
 using Debonair.Provider.MySql.Data.Context;
 using Debonair.Utilities;
 
@@ -53,7 +52,7 @@ namespace Debonair.Provider.MySql
             var sql = _dataProvider.CrudGenerator.Insert();
             var newId = _dataProvider.DataContext.ExecuteScalar<TEntity>(sql, entity.ToDbDataParameters<TEntity>(_dataProvider.DbConnection));
 
-            var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+            var mapping = MappingCache.GetMappingForEntity<TEntity>();
 
             var propMapping = mapping?.PropertyMappings.FirstOrDefault(x => x.IsPrimaryKey);
 

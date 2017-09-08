@@ -225,7 +225,7 @@ namespace Debonair.Provider.MsSql.Data.Context
             string rightFieldName)
         {
 
-            _conditions.Append($"[{leftTableName}].[{leftFieldName}] {op} {rightTableName}.{rightFieldName}");
+            _conditions.Append($"[{leftTableName}].[{leftFieldName}] {op} [{rightTableName}].[{rightFieldName}]");
         }
 
         private static string ParameterFormat(object parameter)

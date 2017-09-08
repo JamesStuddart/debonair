@@ -7,17 +7,17 @@ using System.Text;
 using Debonair.Data.Orm;
 using Debonair.Data.Orm.QueryBuilder;
 using Debonair.FluentApi;
-using Debonair.Provider.Sqlite.Data.Context;
+using Debonair.Provider.SqlCe.Data.Context;
 using Debonair.Utilities;
 
-namespace Debonair.Provider.Sqlite.Data.Orm
+namespace Debonair.Provider.SqlCe.Data.Orm
 {
-    public class SqliteCrudGenerator<TEntity> : ICrudGenerator<TEntity> where TEntity : class, new()
+    public class SqlCeCrudGenerator<TEntity> : ICrudGenerator<TEntity> where TEntity : class, new()
     {
         public Dictionary<string, object> SelectParameters { get; set; }
         public IEntityMapping<TEntity> EntityMapping { get; }
         
-        public SqliteCrudGenerator()
+        public SqlCeCrudGenerator()
         {
             EntityMapping = MappingCache.GetMappingForEntity<TEntity>();
         }
@@ -44,7 +44,7 @@ namespace Debonair.Provider.Sqlite.Data.Orm
 
             if (EntityMapping.PrimaryKey != null)
             {
-                strBuilder.AppendLine("SELECT last_insert_rowid()");
+                strBuilder.AppendLine("SELECT @@Identity");
             }
 
             return strBuilder.ToString();
@@ -72,7 +72,7 @@ namespace Debonair.Provider.Sqlite.Data.Orm
                                     string.Join(", ", EntityMapping.Properties.Select(ProjectionFunction)),
                                     EntityMapping.TableName);
 
-            var sqlGenerator = new LambdaToSql<TEntity>(EntityMapping, new SqliteBuilder() );
+            var sqlGenerator = new LambdaToSql<TEntity>(EntityMapping, new SqlCeBuilder() );
 
             if (predicate != null)
             {

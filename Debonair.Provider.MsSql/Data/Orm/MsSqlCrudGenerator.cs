@@ -8,6 +8,7 @@ using Debonair.Data.Orm;
 using Debonair.Data.Orm.QueryBuilder;
 using Debonair.FluentApi;
 using Debonair.Provider.MsSql.Data.Context;
+using Debonair.Utilities;
 
 namespace Debonair.Provider.MsSql.Data.Orm
 {
@@ -20,7 +21,7 @@ namespace Debonair.Provider.MsSql.Data.Orm
         public MsSqlCrudGenerator(bool dirtyRead = true)
         {
             _dirtyRead = dirtyRead;
-            EntityMapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+            EntityMapping = MappingCache.GetMappingForEntity<TEntity>();
         }
 
         #region Query generators

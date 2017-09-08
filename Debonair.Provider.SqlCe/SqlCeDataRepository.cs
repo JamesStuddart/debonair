@@ -4,22 +4,22 @@ using System.Linq;
 using System.Linq.Expressions;
 using Debonair.Data;
 using Debonair.FluentApi;
-using Debonair.Provider.MsSql.Data.Context;
+using Debonair.Provider.SqlCe.Data.Context;
 using Debonair.Utilities;
 
-namespace Debonair.Provider.MsSql
+namespace Debonair.Provider.SqlCe
 {
-    public class MsSqlDataRepository<TEntity> : IDataRepository<TEntity> where TEntity : class, new()
+    public class SqlCeDataRepository<TEntity> : IDataRepository<TEntity> where TEntity : class, new()
     {
         private bool _disposed;
         private readonly IDataProvider<TEntity> _dataProvider;
 
-        public MsSqlDataRepository(MsSqlProvider<TEntity> dataProvider)
+        public SqlCeDataRepository(SqlCeProvider<TEntity> dataProvider)
         {
             _dataProvider = dataProvider;
         }
 
-        ~MsSqlDataRepository()
+        ~SqlCeDataRepository()
         {
             Dispose(false);
         }

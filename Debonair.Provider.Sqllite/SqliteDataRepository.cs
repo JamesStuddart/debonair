@@ -53,7 +53,7 @@ namespace Debonair.Provider.Sqlite
             var sql = _dataProvider.CrudGenerator.Insert();
             var newId = _dataProvider.DataContext.ExecuteScalar<TEntity>(sql, entity.ToDbDataParameters<TEntity>(_dataProvider.DbConnection));
 
-            var mapping = EntityMappingEngine.GetMappingForEntity<TEntity>();
+            var mapping = MappingCache.GetMappingForEntity<TEntity>();
 
             var propMapping = mapping?.PropertyMappings.FirstOrDefault(x => x.IsPrimaryKey);
 

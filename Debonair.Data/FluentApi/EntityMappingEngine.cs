@@ -6,10 +6,10 @@ using System.Reflection;
 
 namespace Debonair.FluentApi
 {
-    public static class EntityMappingEngine
+    internal static class EntityMappingEngine
     {
-        private static bool isInitialized = false;
-        private static IList<IEntityMapping> entityMappings;
+        private static bool _isInitialized = false;
+        private static IList<IEntityMapping> _entityMappings;
 
         public static void Initialize(IList<IEntityMapping> mappings = null)
         {
@@ -17,8 +17,8 @@ namespace Debonair.FluentApi
 
             try
             {
-                entityMappings = mappings ?? LoadEntityMappings();
-                isInitialized = true;
+                _entityMappings = mappings ?? LoadEntityMappings();
+                _isInitialized = true;
             }
             catch (Exception ex)
             {
@@ -30,7 +30,7 @@ namespace Debonair.FluentApi
         {
             CheckInitialization();
 
-            var mapping = (IEntityMapping<TEntity>)entityMappings.Where(x => x.GetType().BaseType != null).FirstOrDefault(x => x.GetType().BaseType.GenericTypeArguments[0] == typeof(TEntity));
+            var mapping = (IEntityMapping<TEntity>)_entityMappings.Where(x => x.GetType().BaseType != null).FirstOrDefault(x => x.GetType().BaseType.GenericTypeArguments[0] == typeof(TEntity));
 
             if (mapping == null)
             {
@@ -43,14 +43,12 @@ namespace Debonair.FluentApi
             return mapping;
         }
 
-
         private static void CheckInitialization()
         {
-            if (isInitialized == false)
+            if (_isInitialized == false)
                 Initialize();
             //throw new InitializationException("Debonair Entity Mapping Engine NOT Initialized");
         }
-
 
         private static IList<IEntityMapping> LoadEntityMappings()
         {

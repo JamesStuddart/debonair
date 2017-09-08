@@ -201,31 +201,31 @@ namespace Debonair.Provider.Sqlite.Data.Context
         private void QueryByField(string tableName, string fieldName, string op, object fieldValue)
         {
             _sqlParameters.Add(fieldName, ParameterFormat(fieldValue));
-            _conditions.Append($"[{tableName}].[{fieldName}] {op} @{fieldName}");
+            _conditions.Append($"\"{tableName}\".\"{fieldName}\" {op} @{fieldName}");
         }
 
 
         private void QueryByFieldLike(string tableName, string fieldName, string fieldValue)
         {
             _sqlParameters.Add(fieldName, ParameterFormat(fieldValue));
-            _conditions.Append($"[{tableName}].[{fieldName}] LIKE @{fieldName}");
+            _conditions.Append($"\"{tableName}\".\"{fieldName}\" LIKE @{fieldName}");
         }
 
         private void QueryByFieldNull(string tableName, string fieldName)
         {
-            _conditions.Append($"[{tableName}].[{fieldName}] IS NULL");
+            _conditions.Append($"\"{tableName}\".\"{fieldName}\" IS NULL");
         }
 
         private void QueryByFieldNotNull(string tableName, string fieldName)
         {
-            _conditions.Append($"[{tableName}].[{fieldName}] IS NOT NULL");
+            _conditions.Append($"\"{tableName}\".\"{fieldName}\" IS NOT NULL");
         }
 
         private void QueryByFieldComparison(string leftTableName, string leftFieldName, string op, string rightTableName,
             string rightFieldName)
         {
 
-            _conditions.Append($"[{leftTableName}].[{leftFieldName}] {op} {rightTableName}.{rightFieldName}");
+            _conditions.Append($"\"{leftTableName}\".\"{leftFieldName}\" {op} \"{rightTableName}\".\"{rightFieldName}\"");
         }
 
         private static string ParameterFormat(object parameter)

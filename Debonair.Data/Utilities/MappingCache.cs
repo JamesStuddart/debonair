@@ -20,7 +20,8 @@ namespace Debonair.Utilities
 
             return value;
         }
-        private static IEntityMapping<TEntity> GetMappingForEntity<TEntity>() where TEntity : class, new()
+
+        public static IEntityMapping<TEntity> GetMappingForEntity<TEntity>() where TEntity : class, new()
         {
             var key = typeof(TEntity).FullName;
 

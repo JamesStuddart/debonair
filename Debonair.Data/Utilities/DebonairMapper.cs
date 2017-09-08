@@ -44,7 +44,7 @@ namespace Debonair.Utilities
         public static List<IDbDataParameter> ToDbDataParameters<TEntity>(this object source, IDbConnection connection) where TEntity : class, new()
         {
             var list = new List<IDbDataParameter>();
-            
+
             foreach (var prop in source.GetType().GetProperties())
             {
                 if (MappingCache.GetPropertyMapping<TEntity>(prop).IsIgnored) continue;
@@ -59,7 +59,7 @@ namespace Debonair.Utilities
         {
             return source?.Select(item => CreateParameter(connection, item.Key, item.Value)).ToList() ?? new List<IDbDataParameter>();
         }
-        
+
         private static IDbDataParameter CreateParameter(IDbConnection connection, string name, object value)
         {
             var paramater = connection.CreateCommand().CreateParameter();
@@ -72,24 +72,30 @@ namespace Debonair.Utilities
 
         private static DbType GetDbType(Type type)
         {
-           var strTypeName = type.Name;
+            var strTypeName = type.Name;
             var dbType = DbType.String;
 
-                if (ReferenceEquals(type, typeof(DBNull)))
-                {
-                    return dbType;
-                }
+            if (ReferenceEquals(type, typeof(DBNull)))
+            {
+                return dbType;
+            }
 
-                if (ReferenceEquals(type, typeof(byte[])))
-                {
-                    return DbType.Binary;
-                }
+            if (ReferenceEquals(type, typeof(byte[])))
+            {
+                return DbType.Binary;
+            }
 
-                dbType = (DbType)Enum.Parse(typeof(System.Data.DbType), strTypeName, true);
+            dbType = (DbType)Enum.Parse(typeof(DbType), strTypeName, true);
 
-                if (dbType == System.Data.DbType.UInt64)
-                    dbType = System.Data.DbType.Int64;
-           
+            switch (dbType)
+            {
+                case DbType.UInt64:
+                    dbType = DbType.Int64;
+                    break;
+                case DbType.UInt32:
+                    dbType = DbType.Int32;
+                    break;
+            }
 
             return dbType;
         }
