@@ -13,8 +13,8 @@ namespace Debonair.Data.Context
         void ExecuteNonQuery(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text);
         void ExecuteNonQuery(string sql);
 
-        int ExecuteScalar<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new();
-        int ExecuteScalar<TEntity>(string sql) where TEntity : class, new();
+        object ExecuteScalar<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new();
+        object ExecuteScalar<TEntity>(string sql) where TEntity : class, new();
 
         IEnumerable<TEntity> Query<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new();
         IEnumerable<TEntity> Query<TEntity>(string sql, CommandType commandType = CommandType.Text) where TEntity : class, new();

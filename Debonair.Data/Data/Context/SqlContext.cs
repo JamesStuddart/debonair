@@ -97,9 +97,9 @@ namespace Debonair.Data.Context
         #endregion nonquery
 
         #region ExecuteScalar
-        public int ExecuteScalar<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
+        public object ExecuteScalar<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
-            int result;
+            object result;
 
             try
             {
@@ -118,7 +118,7 @@ namespace Debonair.Data.Context
 
                     try
                     {
-                        result = (int)cmd.ExecuteScalar();
+                        result = cmd.ExecuteScalar();
                     }
                     catch (Exception)
                     {
@@ -135,7 +135,7 @@ namespace Debonair.Data.Context
             return result;
         }
 
-        public int ExecuteScalar<TEntity>(string sql) where TEntity : class, new()
+        public object ExecuteScalar<TEntity>(string sql) where TEntity : class, new()
         {
             return ExecuteScalar<TEntity>(sql, new List<IDbDataParameter>());
         }
@@ -194,7 +194,6 @@ namespace Debonair.Data.Context
         public IEnumerable<TEntity> ExecuteStoredProcedure<TEntity>(string spName, List<IDbDataParameter> parameters) where TEntity : class, new()
         {
             return Query<TEntity>(spName, parameters, CommandType.StoredProcedure);
-
         }
 
         public void ExecuteStoredProcedure(string spName, List<IDbDataParameter> parameters)

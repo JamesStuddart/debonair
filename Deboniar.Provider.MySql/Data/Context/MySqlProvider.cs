@@ -15,7 +15,7 @@ namespace Debonair.Provider.MySql.Data.Context
         public MySqlProvider(IDbConnection connection)
         {
             DbConnection = connection;
-            CrudGenerator = new MySqlCrudGenerator<TEntity>(false);
+            CrudGenerator = new MySqlCrudGenerator<TEntity>();
             DataContext = new SqlContext(DbConnection);
         }
 
