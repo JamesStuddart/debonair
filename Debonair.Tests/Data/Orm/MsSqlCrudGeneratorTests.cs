@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Debonair.Tests.Data.Orm
 {
-    public class SqlCrudGeneratorTests
+    public class MsSqlCrudGeneratorTests
     {
         private readonly ICrudGenerator<DeleteableTestObject> _sqlGenerator = new MsSqlCrudGenerator<DeleteableTestObject>();
 
