@@ -1,29 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Debonair.Utilities.Extensions
 {
+    public static class New<TEntity> where TEntity : class, new()
+    {
+        public static readonly Func<TEntity> Instance = Expression.Lambda<Func<TEntity>>(Expression.New(typeof(TEntity))).Compile();
+    }
+
     public static class DbDataReaderExts
     {
-        private static HashSet<int> ColHashSet = new HashSet<int>();
-        private static string TableName;
+        private static HashSet<int> _colHashSet = new HashSet<int>();
+        private static string _tableName;
 
         public static List<TEntity> MapTo<TEntity>(this IDataReader dr) where TEntity : class, new()
         {
             var list = new List<TEntity>();
 
-            GetColumnNames(dr, typeof(TEntity).FullName);
-
             while (dr.Read())
             {
-                var obj = Activator.CreateInstance<TEntity>();
+                //var c = typeof(TEntity)
+                //    .GetTypeInfo()
+                //    .DeclaredConstructors
+                //    .Single(ci => ci.GetParameters().Length == 0);
+                //var obj = (TEntity) c.Invoke(Type.EmptyTypes);
+
+                // var obj = Activator.CreateInstance<TEntity>();
+
+                var obj = New<TEntity>.Instance();
 
                 foreach (var prop in EntityCache.GetPropertyInfo(obj))
                 {
                     var colName = prop.Name;
 
-                    if (!HasColumn(colName) || MappingCache.GetPropertyMapping<TEntity>(prop).IsIgnored) continue;
+                    if (!HasColumn(dr, colName) || MappingCache.GetPropertyMapping<TEntity>(prop).IsIgnored) continue;
 
                     if (!Equals(dr[colName], DBNull.Value))
                     {
@@ -37,24 +51,18 @@ namespace Debonair.Utilities.Extensions
         }
 
 
-        private static bool HasColumn(string colName)
+        private static bool HasColumn(IDataRecord dr, string colName)
         {
-            return ColHashSet.Contains(colName.ToLower().GetHashCode());
-        }
-
-        private static void GetColumnNames(IDataReader dr, string tableName)
-        {
-            if (string.IsNullOrEmpty(TableName) || !TableName.Equals(tableName, StringComparison.InvariantCultureIgnoreCase))
+            try
             {
-                ColHashSet = new HashSet<int>();
-                TableName = tableName;
-
-                for (var i = 0; i < dr.FieldCount; i++)
-                {
-                    ColHashSet.Add(dr.GetName(i).ToLower().GetHashCode());
-                }
+                return dr.GetOrdinal(colName) >= 0;
+            }
+            catch
+            {
+                return false;
             }
         }
+        
     }
 
 

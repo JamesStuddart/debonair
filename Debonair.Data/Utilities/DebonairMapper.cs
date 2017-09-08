@@ -7,6 +7,7 @@ namespace Debonair.Utilities
 {
     public static class DebonairMapper
     {
+
         /// <typeparam name="TEntity">Objet you want to map TO</typeparam>
         /// <param name="source">Objet you want to map FROM</param>
         /// <param name="strict">Ensure property types match as well as names</param>

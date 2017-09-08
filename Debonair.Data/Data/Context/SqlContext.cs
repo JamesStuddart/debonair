@@ -65,6 +65,7 @@ namespace Debonair.Data.Context
                     var cmd = dbConnection.CreateCommand();
                     cmd.CommandType = commandType;
                     cmd.CommandText = sql;
+                    cmd.Transaction = transaction;
 
                     foreach (var parameter in parameters)
                     {
@@ -110,6 +111,7 @@ namespace Debonair.Data.Context
                     var cmd = dbConnection.CreateCommand();
                     cmd.CommandType = commandType;
                     cmd.CommandText = sql;
+                    cmd.Transaction = transaction;
 
                     foreach (var parameter in parameters)
                     {
@@ -141,7 +143,7 @@ namespace Debonair.Data.Context
         }
         #endregion ExecuteScalar
 
-        #region query
+        #region Query
 
         public IEnumerable<TEntity> Query<TEntity>(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text) where TEntity : class, new()
         {
@@ -156,6 +158,7 @@ namespace Debonair.Data.Context
                     var cmd = dbConnection.CreateCommand();
                     cmd.CommandType = commandType;
                     cmd.CommandText = sql;
+                    cmd.Transaction = transaction;
 
                     foreach (var parameter in parameters)
                     {
@@ -164,7 +167,10 @@ namespace Debonair.Data.Context
 
                     try
                     {
-                        result = cmd.ExecuteReader().MapTo<TEntity>();
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            result = reader.MapTo<TEntity>();
+                        }
                     }
                     catch (Exception)
                     {
@@ -211,6 +217,6 @@ namespace Debonair.Data.Context
             ExecuteNonQuery(spName, new List<IDbDataParameter>(), CommandType.StoredProcedure);
         }
 
-        #endregion query
+        #endregion Query
     }
 }
