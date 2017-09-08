@@ -55,29 +55,37 @@ namespace Debonair.Data.Context
         #region nonquery
         public void ExecuteNonQuery(string sql, List<IDbDataParameter> parameters, CommandType commandType = CommandType.Text)
         {
-            using (var transaction = dbConnection.BeginTransaction())
+
+            try
             {
-                var cmd = dbConnection.CreateCommand();
-                cmd.CommandType = commandType;
-                cmd.CommandText = sql;
+                Open();
 
-                foreach (var parameter in parameters)
+                using (var transaction = dbConnection.BeginTransaction())
                 {
-                    cmd.Parameters.Add(parameter);
-                }
+                    var cmd = dbConnection.CreateCommand();
+                    cmd.CommandType = commandType;
+                    cmd.CommandText = sql;
 
-                try
-                {
-                    Open();
+                    foreach (var parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
 
-                    cmd.ExecuteNonQuery();
-                    transaction.Commit();
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                finally
-                {
-                    transaction.Rollback();
-                    Close();
-                }
+            }
+            finally
+            {
+                Close();
             }
 
         }
@@ -93,28 +101,35 @@ namespace Debonair.Data.Context
         {
             int result;
 
-            using (var transaction = dbConnection.BeginTransaction())
+            try
             {
-                var cmd = dbConnection.CreateCommand();
-                cmd.CommandType = commandType;
-                cmd.CommandText = sql;
+                Open();
 
-                foreach (var parameter in parameters)
+                using (var transaction = dbConnection.BeginTransaction())
                 {
-                    cmd.Parameters.Add(parameter);
-                }
+                    var cmd = dbConnection.CreateCommand();
+                    cmd.CommandType = commandType;
+                    cmd.CommandText = sql;
 
-                try
-                {
-                    Open();
+                    foreach (var parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
 
-                    result = (int)cmd.ExecuteScalar();
+                    try
+                    {
+                        result = (int)cmd.ExecuteScalar();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                finally
-                {
-                    transaction.Rollback();
-                    Close();
-                }
+            }
+            finally
+            {
+                Close();
             }
 
             return result;
@@ -132,28 +147,35 @@ namespace Debonair.Data.Context
         {
             IEnumerable<TEntity> result;
 
-            using (var transaction = dbConnection.BeginTransaction())
+            try
             {
-                var cmd = dbConnection.CreateCommand();
-                cmd.CommandType = commandType;
-                cmd.CommandText = sql;
+                Open();
 
-                foreach (var parameter in parameters)
+                using (var transaction = dbConnection.BeginTransaction())
                 {
-                    cmd.Parameters.Add(parameter);
-                }
+                    var cmd = dbConnection.CreateCommand();
+                    cmd.CommandType = commandType;
+                    cmd.CommandText = sql;
 
-                try
-                {
-                    Open();
+                    foreach (var parameter in parameters)
+                    {
+                        cmd.Parameters.Add(parameter);
+                    }
 
-                    result = cmd.ExecuteReader().MapTo<TEntity>();
+                    try
+                    {
+                        result = cmd.ExecuteReader().MapTo<TEntity>();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
-                finally
-                {
-                    transaction.Rollback();
-                    Close();
-                }
+            }
+            finally
+            {
+                Close();
             }
 
             return result;
