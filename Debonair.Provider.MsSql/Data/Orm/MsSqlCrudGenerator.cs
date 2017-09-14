@@ -64,7 +64,7 @@ namespace Debonair.Provider.MsSql.Data.Orm
                                          EntityMapping.SchemaName,
                                          EntityMapping.TableName,
                                          string.Join(", ", EntityMapping.Properties.Where(x=>!x.IsIgnored && !x.IsPrimaryKey).Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]") + $" = @{p.PropertyInfo.Name}")),
-                                         $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
+                                         $"[{EntityMapping.TableName}].[{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name}] = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
 
             return strBuilder.ToString();
         }

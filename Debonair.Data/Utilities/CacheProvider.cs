@@ -21,6 +21,7 @@ namespace Debonair.Utilities
         /// </summary>
         /// <typeparam name="T">Any object type you wish to store</typeparam>
         /// <param name="key">The key used to identify the value</param>
+        /// <param name="value"></param>
         /// <returns></returns>
         public bool TryGet<T>(string key, out T value)
         {

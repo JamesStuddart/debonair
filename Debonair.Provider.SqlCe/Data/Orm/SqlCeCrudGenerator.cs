@@ -58,7 +58,7 @@ namespace Debonair.Provider.SqlCe.Data.Orm
             strBuilder.AppendFormat("UPDATE {0} SET {1} WHERE {2}",
                                          EntityMapping.TableName,
                                          string.Join(", ", EntityMapping.Properties.Where(x=>!x.IsIgnored && !x.IsPrimaryKey).Select(p => (!string.IsNullOrEmpty(p.ColumnName) ? $"[{EntityMapping.TableName}].[{p.ColumnName}]" : $"[{EntityMapping.TableName}].[{p.PropertyInfo.Name}]") + $" = @{p.PropertyInfo.Name}")),
-                                         $"{EntityMapping.TableName}.{EntityMapping.PrimaryKey.ColumnName} = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
+                                         $"{EntityMapping.TableName}.{EntityMapping.PrimaryKey.ColumnName ?? EntityMapping.PrimaryKey.PropertyInfo.Name} = @{EntityMapping.PrimaryKey.PropertyInfo.Name}");
 
             return strBuilder.ToString();
         }

@@ -13,7 +13,7 @@ namespace Debonair.FluentApi
 
         public static void Initialize(IList<IEntityMapping> mappings = null)
         {
-            ForceLoadAssemblies();
+            //ForceLoadAssemblies();
 
             try
             {
@@ -55,21 +55,29 @@ namespace Debonair.FluentApi
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => typeof(IEntityMapping).IsAssignableFrom(x) && !x.IsGenericType && !x.IsGenericTypeDefinition && !x.IsInterface).Select(x => (IEntityMapping)Activator.CreateInstance(x)).ToList();
         }
 
-        private static void ForceLoadAssemblies()
-        {
-            var stackFrames = new StackTrace().GetFrames();
-            if (stackFrames != null)
-                foreach (var frame in stackFrames)
-                {
-                    var type = frame.GetMethod().DeclaringType;
-                    if (type != null)
-                    {
-                        foreach (var refedAssembly in type.Assembly.GetReferencedAssemblies())
-                        {
-                            Assembly.Load(refedAssembly);
-                        }
-                    }
-                }
-        }
+        //private static void ForceLoadAssemblies()
+        //{
+        //    try
+        //    {
+        //        var stackFrames = new StackTrace().GetFrames();
+        //        if (stackFrames != null)
+        //            foreach (var frame in stackFrames)
+        //            {
+        //                var type = frame.GetMethod().DeclaringType;
+        //                if (type != null)
+        //                {
+        //                    foreach (var refedAssembly in type.Assembly.GetReferencedAssemblies())
+        //                    {
+        //                        Assembly.Load(refedAssembly);
+        //                    }
+        //                }
+        //            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+        //}
     }
 }
